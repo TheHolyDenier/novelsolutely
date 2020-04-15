@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/logged-user.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -7,10 +12,14 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   var _signIn = true;
+  var _autoValidate = false;
   var _showPassword = true;
   final _inputMail = TextEditingController();
   final _inputName = TextEditingController();
   final _inputPwd = TextEditingController();
+
+  final _formKeyLogin = GlobalKey<FormState>();
+  final _formKeyRegister = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -51,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: RaisedButton(
-                          onPressed: () {},
+                          onPressed: _signIn ? _login : _register,
                           child: Text(_signIn ? 'Inicia sesión' : 'Regístrate'),
                         ),
                       )
@@ -92,27 +101,91 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void _login() {
+    Provider.of<AuthService>(context, listen: false)
+        .loginUser(email: _inputMail.text, password: _inputPwd.text);
+  }
+
+//    if (_formKeyLogin.currentState.validate()) {
+//      var provider = Provider.of<AuthService>(context, listen: false).loginUser();
+//      provider.loginUser();
+//      try {
+//        // Inicio de sesión
+//        await Provider.of<AuthService>(context, listen: false)
+//            .loginUser(email: _inputMail.text, password: _inputPwd.text);
+//        Navigator.of(context).pop();
+//      } on AuthException catch (error) {
+//        print('${error.code}: ${error.message}');
+//      } on Exception catch (error) {
+//        print(error.toString());
+//      }
+//    } else {
+//      _autoValidate = true;
+//    }
+//  }
+
+  void _register() async {
+    if (_formKeyRegister.currentState.validate()) {
+      try {
+        FirebaseUser user = (await FirebaseAuth.instance
+                .createUserWithEmailAndPassword(
+                    email: _inputMail.text, password: _inputPwd.text))
+            .user;
+        UserUpdateInfo userUpdateInfo = new UserUpdateInfo();
+        userUpdateInfo.displayName = _inputName.text;
+        user.updateProfile(userUpdateInfo).then((_) {
+          _login();
+//          Provider.of<AuthService>(context, listen: false)
+//              .loginUser(email: _inputMail.text, password: _inputPwd.text);
+//          Navigator.of(context).pop();
+        });
+      } on AuthException catch (error) {
+        print('${error.code}: ${error.message}');
+      } on Exception catch (error) {
+        print(error.toString());
+      }
+    } else {
+      _autoValidate = true;
+    }
+  }
+
   Widget _registerWidget() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        TextField(
-          controller: _inputName,
-          decoration: InputDecoration(labelText: 'Nombre'),
-        ),
-        _widgetEmail(),
-        _widgetPassword(),
-      ],
+    return Form(
+      key: _formKeyRegister,
+      autovalidate: _autoValidate,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          TextFormField(
+            validator: (name) {
+              if (name.isEmpty) {
+                return 'Este campo es obligatorio';
+              } else if (name.length > 4) {
+                return 'Escriba un nombre de al menos 4 caracteres.';
+              }
+              return null;
+            },
+            controller: _inputName,
+            decoration: InputDecoration(labelText: 'Nombre'),
+          ),
+          _widgetEmail(),
+          _widgetPassword(),
+        ],
+      ),
     );
   }
 
   Widget _loginWidget() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        _widgetEmail(),
-        _widgetPassword(),
-      ],
+    return Form(
+      key: _formKeyLogin,
+      autovalidate: _autoValidate,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          _widgetEmail(),
+          _widgetPassword(),
+        ],
+      ),
     );
   }
 
@@ -127,7 +200,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _widgetEmail() {
-    return TextField(
+    return TextFormField(
+      validator: (email) {
+        if (email.isEmpty) {
+          return 'Este campo es obligatorio';
+        } else if (!EmailValidator.validate(email)) {
+          return 'Introduzca un e-mail válido';
+        }
+        return null;
+      },
       controller: _inputMail,
       decoration: InputDecoration(
         labelText: 'E-mail',
@@ -138,7 +219,15 @@ class _LoginPageState extends State<LoginPage> {
   Widget _widgetPassword() {
     return Stack(
       children: <Widget>[
-        TextField(
+        TextFormField(
+          validator: (password) {
+            if (password.isEmpty) {
+              return 'Este campo es obligatorio';
+            } else if (password.length > 6) {
+              return 'La contraseña debe de tener al menos 6 caracteres';
+            }
+            return null;
+          },
           controller: _inputPwd,
           decoration: InputDecoration(labelText: 'Contraseña'),
           obscureText: _showPassword,
