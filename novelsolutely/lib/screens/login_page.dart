@@ -106,24 +106,6 @@ class _LoginPageState extends State<LoginPage> {
         .loginUser(email: _inputMail.text, password: _inputPwd.text);
   }
 
-//    if (_formKeyLogin.currentState.validate()) {
-//      var provider = Provider.of<AuthService>(context, listen: false).loginUser();
-//      provider.loginUser();
-//      try {
-//        // Inicio de sesión
-//        await Provider.of<AuthService>(context, listen: false)
-//            .loginUser(email: _inputMail.text, password: _inputPwd.text);
-//        Navigator.of(context).pop();
-//      } on AuthException catch (error) {
-//        print('${error.code}: ${error.message}');
-//      } on Exception catch (error) {
-//        print(error.toString());
-//      }
-//    } else {
-//      _autoValidate = true;
-//    }
-//  }
-
   void _register() async {
     if (_formKeyRegister.currentState.validate()) {
       try {
@@ -135,9 +117,6 @@ class _LoginPageState extends State<LoginPage> {
         userUpdateInfo.displayName = _inputName.text;
         user.updateProfile(userUpdateInfo).then((_) {
           _login();
-//          Provider.of<AuthService>(context, listen: false)
-//              .loginUser(email: _inputMail.text, password: _inputPwd.text);
-//          Navigator.of(context).pop();
         });
       } on AuthException catch (error) {
         print('${error.code}: ${error.message}');

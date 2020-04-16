@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:novelsolutely/providers/logged-user.dart';
 import 'package:provider/provider.dart';
+
+import '../providers/logged-user.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,7 +11,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-//    var provider = ;
     return Scaffold(
       appBar: AppBar(
         title: FittedBox(
