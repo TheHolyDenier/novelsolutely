@@ -37,7 +37,6 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Center(
         child: Stack(
-//          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Padding(
               padding:

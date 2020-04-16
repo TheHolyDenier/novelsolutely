@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
               print("error");
               return Text('Ha habido un error: ${snapshot.error}');
             }
-            return snapshot.hasData ? HomePage() : LoginPage();
+            return !snapshot.hasData ? HomePage() : LoginPage();
           } else {
             return Scaffold(
               body: Center(
