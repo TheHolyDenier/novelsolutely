@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -39,6 +40,7 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
+      drawer: _projectWidget(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
@@ -46,16 +48,7 @@ class _HomePageState extends State<HomePage> {
           height: MediaQuery.of(context).size.height,
           color: Colors.amber,
           child: Wrap(
-            children: <Widget>[
-              _projectWidget(),
-//              Container(
-//                width: 500,
-//                color: Colors.black12,
-//              ),
-//              Container(
-//                width: 500,
-//              ),
-            ],
+            children: <Widget>[],
           ),
         ),
       ),
@@ -80,19 +73,37 @@ class _HomePageState extends State<HomePage> {
       Project project = Project.fromFirestore(doc);
       return ListTile(
         title: new Text(project.title),
+        leading: project.imageUrl.isEmpty
+            ? CircleAvatar(
+                backgroundColor: Theme.of(context).primaryColor,
+                child: AutoSizeText(
+//                  '${project.title[0]}',
+                  '${project.title.substring(0,2)}',
+                  style: TextStyle(color: Colors.white, fontFamily: 'Pacifico'),
+                ),
+              )
+            : CircleAvatar(
+                backgroundImage: NetworkImage(project.imageUrl),
+              ),
       );
     }).toList();
   }
 
   _projectWidget() {
     return Container(
+      width: 300.0,
       color: Colors.white,
-      width: MediaQuery.of(context).size.width > 500
-          ? MediaQuery.of(context).size.width / 3 - 10
-          : double.infinity,
-      height: MediaQuery.of(context).size.height,
-      child: Wrap(
+      child: Column(
         children: <Widget>[
+          DrawerHeader(
+            child: Container(
+              width: 300.0,
+              child: Container(),
+            ),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
           StreamBuilder(
               stream: _databaseReference
                   .collection('users')
@@ -110,8 +121,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else {
-                  return Container(
-                    height: 300,
+                  return Expanded(
+//                    height: 300,
                     child: ListView(
                       children: _getProjectsWidget(snapshot),
                     ),
