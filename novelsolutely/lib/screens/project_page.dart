@@ -22,6 +22,7 @@ class ProjectPage extends StatefulWidget {
 
 class _ProjectPageState extends State<ProjectPage> {
   final _firestoreInstance = Firestore.instance;
+
 //  var _uid;
 
 //  var _uid = 'FcUE8ntyTkZWD2Juu1dklakN67t2';
@@ -51,12 +52,37 @@ class _ProjectPageState extends State<ProjectPage> {
                     .document('$id')
                     .snapshots(),
                 builder: (_, AsyncSnapshot<DocumentSnapshot> snapshot) {
-//              DocumentSnapshot doc = snapshot as DocumentSnapshot;
                   if (snapshot.data != null) {
-//                print('${snapshot.data}');
                     final project = Project.fromFirestore(snapshot.data);
-                    return Container(
-                      child: Text('${project.title}'),
+                    return Wrap(
+                      children: <Widget>[
+                        Container(
+                          width: 300.0,
+                          color: Colors.pink,
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                child: project.imageUrl == ''
+                                    ? Icon(
+                                        Icons.photo,
+                                        color: Colors.white,
+                                        size: 300.0,
+                                      )
+                                    : Image(
+                                        image: NetworkImage(project.imageUrl),
+                                      ),
+                              ),
+                              Container(
+//                                color: Colors.black12,
+                                child: Text(
+                                  '${project.title}',
+                                  style: Theme.of(context).textTheme.headline2,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     );
                   } else {
                     return SpinKitChasingDots(
