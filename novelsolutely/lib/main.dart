@@ -54,6 +54,7 @@ class MyApp extends StatelessWidget {
               print("error");
               return Text('Ha habido un error: ${snapshot.error}');
             }
+            Provider.of<AuthService>(context, listen: false).login();
             return snapshot.hasData ? HomePage() : LoginPage();
           } else {
             return Scaffold(
@@ -71,12 +72,6 @@ class MyApp extends StatelessWidget {
         },
       ),
       onGenerateRoute: FluroRouter.router.generator,
-//      home: AuthService().handleAuth(),
-//      routes: <String, WidgetBuilder>{
-//        '/': (BuildContext context) => LoginPage(),
-//        '/': (BuildContext context) => HomePage(),
-//        '/login': (BuildContext context) => LoginPage(),
-//      },
     );
   }
 }

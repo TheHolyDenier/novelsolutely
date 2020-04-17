@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:novelsolutely/providers/logged-user.dart';
 import 'package:novelsolutely/screens/project_page.dart';
 import 'package:novelsolutely/services/routing.dart';
 
@@ -15,8 +16,6 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
-  //  var uid = Provider.of<AuthService>(context, listen: false).getUId();
-  var _uid = 'FcUE8ntyTkZWD2Juu1dklakN67t2';
   final _databaseReference = Firestore.instance;
   ThemeData _theme;
 
@@ -37,31 +36,36 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               color: _theme.primaryColor,
             ),
           ),
-          StreamBuilder(
-              stream: _databaseReference
-                  .collection('users')
-                  .document('$_uid')
-                  .collection('projects')
-                  .orderBy('title')
-                  .snapshots(),
-              builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 28.0),
-                    child: SpinKitThreeBounce(
-                      color: _theme.primaryColor,
-                      size: 20.0,
-                    ),
-                  );
-                } else {
-                  return Expanded(
+          AuthService.user.id == null
+              ? SpinKitChasingDots(
+                  color: Theme.of(context).primaryColor,
+                  size: 50.0,
+                )
+              : StreamBuilder(
+                  stream: _databaseReference
+                      .collection('users')
+                      .document('${AuthService.user.id}')
+                      .collection('projects')
+                      .orderBy('title')
+                      .snapshots(),
+                  builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 28.0),
+                        child: SpinKitThreeBounce(
+                          color: _theme.primaryColor,
+                          size: 20.0,
+                        ),
+                      );
+                    } else {
+                      return Expanded(
 //                    height: 300,
-                    child: ListView(
-                      children: _getProjectsWidget(snapshot),
-                    ),
-                  );
-                }
-              }),
+                        child: ListView(
+                          children: _getProjectsWidget(snapshot),
+                        ),
+                      );
+                    }
+                  }),
           ListTile(
             title: Text('Nuevo proyecto'),
             leading: Icon(Icons.add),
@@ -93,7 +97,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 backgroundImage: NetworkImage(project.imageUrl),
               ),
         onTap: () {
-          FluroRouter.router.navigateTo(context, '${ProjectPage.route}/${project.id}',
+          FluroRouter.router.navigateTo(
+              context, '${ProjectPage.route}/${project.id}',
               transition: TransitionType.fadeIn);
         },
       );
@@ -101,15 +106,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   }
 
   void _writeProject(String title) async {
-//    var projectUid = Uuid().v1();
-
     var docTitle = title.replaceAll(' ', '-');
     docTitle =
         docTitle.replaceAll(new RegExp(r'[^a-zA-Z0-9-\-]'), '').toLowerCase();
 
     await _databaseReference
         .collection('users')
-        .document('$_uid')
+        .document('${AuthService.user.id}')
         .collection('projects')
         .document(docTitle)
         .setData({'title': title, 'id': '$docTitle'});
