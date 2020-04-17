@@ -1,8 +1,10 @@
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:uuid/uuid.dart';
+import 'package:novelsolutely/screens/project_page.dart';
+import 'package:novelsolutely/services/routing.dart';
 
 import '../models/project.dart';
 import './dialog_project.dart';
@@ -90,20 +92,26 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             : CircleAvatar(
                 backgroundImage: NetworkImage(project.imageUrl),
               ),
+        onTap: () {
+          FluroRouter.router.navigateTo(context, '${ProjectPage.route}/${project.id}',
+              transition: TransitionType.fadeIn);
+        },
       );
     }).toList();
   }
 
   void _writeProject(String title) async {
-    var projectUid = Uuid().v1();
+//    var projectUid = Uuid().v1();
 
-    var docTitle = title.replaceAll(new RegExp(r'[^a-zA-Z0-9]'), '-');
-    docTitle = docTitle.replaceAll(new RegExp(r'-{2,}'), '-');
+    var docTitle = title.replaceAll(' ', '-');
+    docTitle =
+        docTitle.replaceAll(new RegExp(r'[^a-zA-Z0-9-\-]'), '').toLowerCase();
+
     await _databaseReference
         .collection('users')
         .document('$_uid')
         .collection('projects')
         .document(docTitle)
-        .setData({'title': title, 'id': '$projectUid'});
+        .setData({'title': title, 'id': '$docTitle'});
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/logged-user.dart';
+import 'package:novelsolutely/widgets/appbar_widget.dart';
 import '../widgets/drawer_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,24 +13,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     _mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: FittedBox(
-          fit: BoxFit.contain,
-          child: Text(
-            'novelsolutely',
-            style: TextStyle(fontFamily: 'Pacifico'),
-          ),
-        ),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: Provider.of<AuthService>(context, listen: false).logout,
-            child: Icon(
-              Icons.exit_to_app,
-              color: Colors.white,
-            ),
-          )
-        ],
-      ),
+      appBar: AppBarWidget(title: 'novelsolutely', appBar: AppBar(),),
       drawer: DrawerWidget(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

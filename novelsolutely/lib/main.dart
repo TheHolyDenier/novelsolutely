@@ -1,20 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:novelsolutely/providers/logged-user.dart';
-
-import 'package:novelsolutely/screens/landing_page.dart';
-import 'package:novelsolutely/screens/login_page.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(
-      ChangeNotifierProvider<AuthService>(
-        child: MyApp(),
-        create: (BuildContext context) {
-          return AuthService();
-        },
-      ),
-    );
+import './screens/landing_page.dart';
+import './screens/login_page.dart';
+import './services/routing.dart';
+import './providers/logged-user.dart';
+
+void main() {
+  FluroRouter.setupRouter();
+  runApp(
+    ChangeNotifierProvider<AuthService>(
+      child: MyApp(),
+      create: (BuildContext context) {
+        return AuthService();
+      },
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -50,12 +54,15 @@ class MyApp extends StatelessWidget {
               print("error");
               return Text('Ha habido un error: ${snapshot.error}');
             }
-            return !snapshot.hasData ? HomePage() : LoginPage();
+            return snapshot.hasData ? HomePage() : LoginPage();
           } else {
             return Scaffold(
               body: Center(
                 child: Container(
-                  child: CircularProgressIndicator(),
+                  child: SpinKitChasingDots(
+                    color: Theme.of(context).primaryColor,
+                    size: 50.0,
+                  ),
                   alignment: Alignment(0.0, 0.0),
                 ),
               ),
@@ -63,6 +70,7 @@ class MyApp extends StatelessWidget {
           }
         },
       ),
+      onGenerateRoute: FluroRouter.router.generator,
 //      home: AuthService().handleAuth(),
 //      routes: <String, WidgetBuilder>{
 //        '/': (BuildContext context) => LoginPage(),
