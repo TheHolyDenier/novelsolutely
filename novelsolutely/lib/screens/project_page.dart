@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase/firebase.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:novelsolutely/models/project.dart';
 import 'package:novelsolutely/providers/logged-user.dart';
-import 'package:provider/provider.dart';
 
 import '../widgets/appbar_widget.dart';
 import '../widgets/drawer_widget.dart';
@@ -22,10 +19,6 @@ class ProjectPage extends StatefulWidget {
 
 class _ProjectPageState extends State<ProjectPage> {
   final _firestoreInstance = Firestore.instance;
-
-//  var _uid;
-
-//  var _uid = 'FcUE8ntyTkZWD2Juu1dklakN67t2';
   final id;
 
   _ProjectPageState({this.id});
@@ -72,8 +65,34 @@ class _ProjectPageState extends State<ProjectPage> {
                                         image: NetworkImage(project.imageUrl),
                                       ),
                               ),
+                              Wrap(
+                                children: <Widget>[
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.edit,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {},
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.save,
+                                      color: Colors.white,
+                                    ),
+                                    color: Colors.black54,
+                                    onPressed: () {},
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.cancel,
+                                      color: Colors.white,
+                                    ),
+                                    color: Colors.black54,
+                                    onPressed: () {},
+                                  ),
+                                ],
+                              ),
                               Container(
-//                                color: Colors.black12,
                                 child: Text(
                                   '${project.title}',
                                   style: Theme.of(context).textTheme.headline2,

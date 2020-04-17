@@ -1,8 +1,10 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-
+import 'package:novelsolutely/providers/logged-user.dart';
 import '../screens/landing_page.dart';
+
 import '../screens/project_page.dart';
+import '../screens/login_page.dart';
 
 class FluroRouter {
   static Router router = Router();
@@ -16,7 +18,9 @@ class FluroRouter {
 
   static Handler _projecthandler = Handler(
       handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
-          ProjectPage(id: params['id'][0]));
+          AuthService.user.id != null
+              ? ProjectPage(id: params['id'][0])
+              : LoginPage());
 
   static void setupRouter() {
     router.define(
