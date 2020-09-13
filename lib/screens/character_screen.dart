@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+//LIBRARIES
 import 'package:flutter_tags/flutter_tags.dart';
 
 //SCREENS && WIDGETS
@@ -38,19 +40,14 @@ class _CharacterScreenState extends State<CharacterScreen> {
         title: Text(Strings.formatName(_character.name)),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          vertical: Dimens.vertical_margin,
-          horizontal: Dimens.horizontal_margin,
-        ),
         child: Column(
           children: [
-            if (_character.imagePath != null && _character.imagePath.length > 0)
-              HeaderWidget(
-                name: _character.name,
-                images: _character.imagePath,
-                height: size.height / 3,
-                width: size.width,
-              ),
+            HeaderWidget(
+              name: _character.name,
+              images: _character.imagePath ?? null,
+              height: size.height / 3,
+              width: size.width,
+            ),
             Container(
               margin: EdgeInsets.symmetric(
                 vertical: Dimens.small_vertical_margin,
@@ -86,14 +83,14 @@ class _CharacterScreenState extends State<CharacterScreen> {
                       itemBuilder: (int index) {
                         final item = _character.tags[index];
                         return ItemTags(
-                          activeColor: HColors.purple,
+                          activeColor: Palette.purple,
                           index: index,
                           title: item,
                           key: Key(item),
                           combine: ItemTagsCombine.withTextBefore,
                           removeButton: ItemTagsRemoveButton(
-                            backgroundColor: HColors.white,
-                            color: HColors.purple,
+                            backgroundColor: Palette.white,
+                            color: Palette.purple,
                             onRemoved: () {
                               removeItem(index);
                               return true;
@@ -113,6 +110,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton.extended(onPressed: (){}, label: Text(Strings.add_category.toUpperCase())),
     );
   }
 

@@ -56,7 +56,7 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                           trailing: _selected[index]
                               ? IconButton(
                                   icon: Icon(Icons.delete_forever_outlined,
-                                      color: HColors.pink),
+                                      color: Palette.pink),
                                   onPressed: () {
                                     setState(() {
                                       //TODO: dialog yes/no

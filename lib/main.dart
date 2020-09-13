@@ -19,6 +19,7 @@ import './models/relationship.dart';
 //UTILS
 import './utils/colors.dart';
 import './utils/routes.dart';
+import './utils/strings.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,27 +43,29 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'novelsolutely',
+      title: Strings.app_name,
       theme: ThemeData(
         brightness: Brightness.light,
-        primarySwatch: HColors.green,
-        accentColor: HColors.purple,
-        errorColor: HColors.pink,
-        backgroundColor: HColors.white,
+        primarySwatch: Palette.green,
+        accentColor: Palette.purple,
+        errorColor: Palette.pink,
+        backgroundColor: Palette.white,
         fontFamily: 'Lato',
         textTheme: TextTheme(
-            headline1: TextStyle(fontFamily: 'Ribeye', color: Colors.black),
-            headline2: TextStyle(fontFamily: 'Ribeye', color: Colors.black),
-            headline3: TextStyle(fontFamily: 'Ribeye', color: Colors.black),
-            headline4: TextStyle(fontFamily: 'Ribeye', color: Colors.black),
-            headline5: TextStyle(fontFamily: 'Ribeye', color: Colors.black),
-            headline6:
-                TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            subtitle1: TextStyle(color: Colors.black),
-            subtitle2: TextStyle(color: Colors.black),
-            bodyText1: TextStyle(color: Colors.black),
-            bodyText2: TextStyle(color: Colors.black)),
-        // fontFamily: ,
+          headline1: TextStyle(fontFamily: 'Ribeye', color: Colors.black),
+          headline2: TextStyle(fontFamily: 'Ribeye', color: Colors.black),
+          headline3: TextStyle(fontFamily: 'Ribeye', color: Colors.black),
+          headline4: TextStyle(fontFamily: 'Ribeye', color: Colors.black),
+          headline5: TextStyle(fontFamily: 'Ribeye', color: Colors.black),
+          headline6:
+              TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          subtitle1: TextStyle(color: Colors.black),
+          subtitle2: TextStyle(color: Colors.black),
+          bodyText1: TextStyle(color: Colors.black),
+          bodyText2: TextStyle(color: Colors.black),
+        ),
+        floatingActionButtonTheme:
+            FloatingActionButtonThemeData(backgroundColor: Palette.green),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: Routes.routes,

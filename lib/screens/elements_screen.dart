@@ -36,7 +36,7 @@ class _ElementsScreenState extends State<ElementsScreen> {
           IconButton(
             icon: Icon(
               dictionary.favorite ? Icons.star : Icons.star_border_outlined,
-              color: dictionary.favorite ? Colors.amber : HColors.black,
+              color: dictionary.favorite ? Colors.amber : Palette.black,
             ),
             onPressed: () {
               setState(() {
@@ -83,14 +83,14 @@ class _ElementsScreenState extends State<ElementsScreen> {
                       children: [
                         Icon(
                           Routes.navigation[i].icon,
-                          color: i == _index ? HColors.green : HColors.black,
+                          color: i == _index ? Palette.green : Palette.black,
                           size: Dimens.icon,
                         ),
                         Text(
                           Routes.navigation[i].title,
                           style: TextStyle(
                               color:
-                                  i == _index ? HColors.green : HColors.black),
+                                  i == _index ? Palette.green : Palette.black),
                         )
                       ],
                     ),
@@ -106,7 +106,6 @@ class _ElementsScreenState extends State<ElementsScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: HColors.green,
         onPressed: () => Navigator.pushNamed(context, NewElementScreen.route,
             arguments: dictionary.id),
         child: Icon(Icons.add),

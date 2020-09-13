@@ -1,5 +1,5 @@
 class Strings {
-  static const app_name = 'Applesolutely';
+  static const app_name = 'novelsolutely';
   static const create = 'CREAR';
   static const cancel = 'CANCELAR';
 
@@ -80,6 +80,8 @@ class Strings {
   static const data = 'Defina el elemento';
 
   static const no_filter = 'Sin filtro';
+
+  static const add_category = 'Nueva categoría';
 
   static String formatName(String name) {
     return '${name.split(', ')[1]} ${name.split(', ')[0]}';

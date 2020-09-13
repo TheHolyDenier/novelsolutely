@@ -5,7 +5,7 @@ import 'colors.dart';
 class DialogAnimation {
   static Future openDialog(BuildContext context, Widget dialog) {
     return showGeneralDialog(
-        barrierColor: HColors.black.withOpacity(0.5),
+        barrierColor: Palette.black.withOpacity(0.5),
         transitionBuilder: (context, a1, a2, widget) {
           return Transform.scale(
             scale: a1.value,

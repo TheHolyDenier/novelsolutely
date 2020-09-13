@@ -120,7 +120,6 @@ class _NewElementScreenState extends State<NewElementScreen> {
         label: Text(
           Strings.save.toUpperCase(),
         ),
-        backgroundColor: HColors.green,
       ),
     );
   }
@@ -242,14 +241,14 @@ class _NewElementScreenState extends State<NewElementScreen> {
         itemBuilder: (int index) {
           final item = _tags[index];
           return ItemTags(
-            activeColor: HColors.purple,
+            activeColor: Palette.purple,
             index: index,
             title: item,
             key: Key(item),
             combine: ItemTagsCombine.withTextBefore,
             removeButton: ItemTagsRemoveButton(
-              backgroundColor: HColors.white,
-              color: HColors.purple,
+              backgroundColor: Palette.white,
+              color: Palette.purple,
               onRemoved: () {
                 removeItem(index);
                 return true;

@@ -77,7 +77,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                                color: HColors.black,
+                                color: Palette.black,
                                 blurRadius: 1.0,
                                 spreadRadius: 0.0,
                                 offset: Offset(1.0, 1.0))

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class HColors {
+class Palette {
   static const MaterialColor green = MaterialColor(0xFFB9E49F, <int, Color>{
     50: Color(0xFFF7FCF3),
     100: Color(0xFFEAF7E2),

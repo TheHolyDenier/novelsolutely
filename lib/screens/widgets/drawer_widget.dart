@@ -54,7 +54,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     left: 0,
                     child: Container(
                       decoration:
-                          BoxDecoration(color: HColors.white.withOpacity(0.5)),
+                          BoxDecoration(color: Palette.white.withOpacity(0.5)),
                       child: Text(
                         _active.name,
                         textAlign: TextAlign.center,

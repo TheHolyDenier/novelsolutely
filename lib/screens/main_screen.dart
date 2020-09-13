@@ -58,7 +58,6 @@ class _MainScreenState extends State<MainScreen> {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.miniEndDocked,
             floatingActionButton: FloatingActionButton(
-              backgroundColor: HColors.green,
               onPressed: () {
                 setState(() {
                   Data.add(context);
@@ -68,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
           )
         : Scaffold(
-            backgroundColor: HColors.white,
+            backgroundColor: Palette.white,
             body: Center(child: CircularProgressIndicator()),
           );
   }
