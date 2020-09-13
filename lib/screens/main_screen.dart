@@ -8,7 +8,6 @@ import 'package:uuid/uuid.dart';
 //SCREENS && WIDGETS
 import './elements_screen.dart';
 import './dialogs/delete_dialog.dart';
-import './dialogs/title_dialog.dart';
 import './widgets/image_widget.dart';
 
 //MODELS
@@ -17,7 +16,6 @@ import '../models/dictionary.dart';
 //UTILS
 import '../utils/dialog_anim.dart';
 import '../utils/strings.dart';
-import '../utils/routes.dart';
 import '../utils/colors.dart';
 import '../utils/dimens.dart';
 import '../utils/data.dart';
@@ -181,8 +179,8 @@ class _MainScreenState extends State<MainScreen> {
 
   void _deleteSelected(value) {
     if (value) {
-      List tmp = List.from(_selected);
-      tmp.forEach((id) {
+      List selected = List.from(_selected);
+      selected.forEach((id) {
         setState(() {
           Data.delete(id);
           _selected.remove(id);

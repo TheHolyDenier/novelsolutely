@@ -1,44 +1,38 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../owned.dart';
+part of 'milestone.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class OwnedAdapter extends TypeAdapter<Owned> {
+class MilestoneAdapter extends TypeAdapter<Milestone> {
   @override
-  final int typeId = 5;
+  final int typeId = 4;
 
   @override
-  Owned read(BinaryReader reader) {
+  Milestone read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Owned(
-      id: fields[0] as String,
-      name: fields[1] as String,
-      ownership: fields[2] as Ownership,
-      obtained: fields[3] as String,
-      lost: fields[4] as String,
+    return Milestone(
+      id: fields[0] as int,
+      date: fields[1] as String,
+      description: fields[2] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Owned obj) {
+  void write(BinaryWriter writer, Milestone obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.name)
+      ..write(obj.date)
       ..writeByte(2)
-      ..write(obj.ownership)
-      ..writeByte(3)
-      ..write(obj.obtained)
-      ..writeByte(4)
-      ..write(obj.lost);
+      ..write(obj.description);
   }
 
   @override
@@ -47,7 +41,7 @@ class OwnedAdapter extends TypeAdapter<Owned> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is OwnedAdapter &&
+      other is MilestoneAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

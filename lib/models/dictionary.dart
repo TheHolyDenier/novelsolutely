@@ -6,9 +6,9 @@ import './character.dart';
 import './item.dart';
 import './other.dart';
 
-part 'hive/dictionary.g.dart';
+part 'dictionary.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 2)
 class Dictionary extends HiveObject {
   @HiveField(0)
   String id;

@@ -1,53 +1,44 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../dictionary.dart';
+part of 'owned.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class DictionaryAdapter extends TypeAdapter<Dictionary> {
+class OwnedAdapter extends TypeAdapter<Owned> {
   @override
-  final int typeId = 0;
+  final int typeId = 6;
 
   @override
-  Dictionary read(BinaryReader reader) {
+  Owned read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Dictionary(
-      fields[1] as String,
+    return Owned(
       id: fields[0] as String,
-      imagePath: fields[2] as String,
-      characters: (fields[4] as List)?.cast<Character>(),
-      favorite: fields[3] as bool,
-      places: (fields[5] as List)?.cast<Item>(),
-      items: (fields[6] as List)?.cast<Item>(),
-      others: (fields[7] as List)?.cast<Other>(),
+      name: fields[1] as String,
+      ownership: fields[2] as Ownership,
+      obtained: fields[3] as String,
+      lost: fields[4] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Dictionary obj) {
+  void write(BinaryWriter writer, Owned obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.imagePath)
+      ..write(obj.ownership)
       ..writeByte(3)
-      ..write(obj.favorite)
+      ..write(obj.obtained)
       ..writeByte(4)
-      ..write(obj.characters)
-      ..writeByte(5)
-      ..write(obj.places)
-      ..writeByte(6)
-      ..write(obj.items)
-      ..writeByte(7)
-      ..write(obj.others);
+      ..write(obj.lost);
   }
 
   @override
@@ -56,7 +47,7 @@ class DictionaryAdapter extends TypeAdapter<Dictionary> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DictionaryAdapter &&
+      other is OwnedAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

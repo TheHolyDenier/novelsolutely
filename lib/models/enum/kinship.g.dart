@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../enum/kinship.dart';
+part of 'kinship.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator

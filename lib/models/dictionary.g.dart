@@ -1,41 +1,53 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../relationship.dart';
+part of 'dictionary.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class RelationshipAdapter extends TypeAdapter<Relationship> {
+class DictionaryAdapter extends TypeAdapter<Dictionary> {
   @override
   final int typeId = 2;
 
   @override
-  Relationship read(BinaryReader reader) {
+  Dictionary read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Relationship(
+    return Dictionary(
+      fields[1] as String,
       id: fields[0] as String,
-      name: fields[1] as String,
-      idName: fields[2] as String,
-      kinship: fields[3] as Kinship,
+      imagePath: fields[2] as String,
+      characters: (fields[4] as List)?.cast<Character>(),
+      favorite: fields[3] as bool,
+      places: (fields[5] as List)?.cast<Item>(),
+      items: (fields[6] as List)?.cast<Item>(),
+      others: (fields[7] as List)?.cast<Other>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, Relationship obj) {
+  void write(BinaryWriter writer, Dictionary obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.idName)
+      ..write(obj.imagePath)
       ..writeByte(3)
-      ..write(obj.kinship);
+      ..write(obj.favorite)
+      ..writeByte(4)
+      ..write(obj.characters)
+      ..writeByte(5)
+      ..write(obj.places)
+      ..writeByte(6)
+      ..write(obj.items)
+      ..writeByte(7)
+      ..write(obj.others);
   }
 
   @override
@@ -44,7 +56,7 @@ class RelationshipAdapter extends TypeAdapter<Relationship> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is RelationshipAdapter &&
+      other is DictionaryAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+//LIBRARIES
+import 'package:uuid/uuid.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 
 //WIDGETS
@@ -6,6 +8,7 @@ import '../screens/widgets/image_widget.dart';
 
 //MODELS
 import '../models/dictionary.dart';
+import '../models/character.dart';
 
 //UTILS
 import '../utils/data.dart';
@@ -33,7 +36,8 @@ class _NewElementScreenState extends State<NewElementScreen> {
   final _tagStateKey = GlobalKey<TagsState>();
 
   List<bool> _selected;
-  double width;
+  double _width;
+  Dictionary _dictionary;
 
   @override
   void initState() {
@@ -45,15 +49,15 @@ class _NewElementScreenState extends State<NewElementScreen> {
   @override
   Widget build(BuildContext context) {
     String id = ModalRoute.of(context).settings.arguments;
-    Dictionary dictionary = Data.box.get(id);
-    width = MediaQuery.of(context).size.width;
+    _dictionary = Data.box.get(id);
+    _width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.keyboard_arrow_left),
         ),
-        title: Text('${Strings.newElement} ${dictionary.name}'),
+        title: Text('${Strings.newElement} ${_dictionary.name}'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
@@ -61,7 +65,7 @@ class _NewElementScreenState extends State<NewElementScreen> {
           horizontal: Dimens.horizontal_margin,
         ),
         child: Container(
-          width: width,
+          width: _width,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -112,9 +116,7 @@ class _NewElementScreenState extends State<NewElementScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          //  TODO
-        },
+        onPressed: _saveElement,
         label: Text(
           Strings.save.toUpperCase(),
         ),
@@ -124,7 +126,7 @@ class _NewElementScreenState extends State<NewElementScreen> {
   }
 
   Widget _buttons() {
-    var toggleSize = (width - Dimens.horizontal_margin * 2 - 10) / 4;
+    var toggleSize = (_width - Dimens.horizontal_margin * 2 - 10) / 4;
     return ToggleButtons(
       children: [
         for (final item in Routes.navigation)
@@ -229,7 +231,7 @@ class _NewElementScreenState extends State<NewElementScreen> {
         textField: TagsTextField(
           autofocus: false,
           hintText: Strings.add_tag,
-          width: width,
+          width: _width,
           onSubmitted: (String str) {
             setState(() {
               if (!Strings.containsCaseInsensitive(str, _tags)) _tags.add(str);
@@ -267,5 +269,33 @@ class _NewElementScreenState extends State<NewElementScreen> {
     setState(() {
       _tags.removeAt(index);
     });
+  }
+
+  void _saveElement() {
+    if (_selected[0]) _saveCharacter();
+
+    if (_selected[1]) {}
+    if (_selected[2]) {}
+    if (_selected[3]) {}
+  }
+
+  void _saveCharacter() {
+    var name = '${_surnameController.text},';
+    if (_nameController.text.isNotEmpty) name += ' ${_nameController.text}';
+    if (_nicknameController.text.isNotEmpty)
+      name += ' «${_nicknameController.text}»';
+    Character character = Character(
+      id: Uuid().v1(),
+      name: name,
+      tags: _tags != null && _tags.length > 0 ? _tags : [Strings.no_filter],
+      summary: _summaryController.text,
+      imagePath: [_imageController.text],
+    );
+    if (_dictionary.characters == null) _dictionary.characters = [];
+    setState(() {
+      _dictionary.characters.add(character);
+    });
+    _dictionary.save();
+    Navigator.pop(context, true);
   }
 }

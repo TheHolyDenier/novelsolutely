@@ -5,9 +5,9 @@ import 'package:hive/hive.dart';
 //MODELS
 import './enum/ownership.dart';
 
-part 'hive/owned.g.dart';
+part 'owned.g.dart';
 
-@HiveType(typeId: 5)
+@HiveType(typeId: 6)
 class Owned {
   @HiveField(0)
   String id;

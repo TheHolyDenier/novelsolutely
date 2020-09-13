@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../enum/ownership.dart';
+part of 'ownership.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator

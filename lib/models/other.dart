@@ -10,9 +10,9 @@ import './category.dart';
 
 //UTILS
 
-part 'hive/other.g.dart';
+part 'other.g.dart';
 
-@HiveType(typeId: 4)
+@HiveType(typeId: 5)
 class Other {
   @HiveField(0)
   String id;

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 //LIBRARIES
 import 'package:hive/hive.dart';
 
-part 'hive/milestone.g.dart';
+part 'milestone.g.dart';
 
-@HiveType(typeId: 7)
+@HiveType(typeId: 4)
 class Milestone {
   @HiveField(0)
   int id;

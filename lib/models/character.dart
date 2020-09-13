@@ -14,9 +14,9 @@ import './category.dart';
 //UTILS
 import '../utils/strings.dart';
 
-part 'hive/character.g.dart';
+part 'character.g.dart';
 
-@HiveType(typeId: 4)
+@HiveType(typeId: 1)
 class Character {
   @HiveField(0)
   String id;
@@ -58,5 +58,10 @@ class Character {
         id: Uuid().v1(),
         title: Strings.personality,
         milestones: milestones ?? []);
+  }
+
+  @override
+  String toString() {
+    return '$name';
   }
 }

@@ -4,7 +4,7 @@ import 'package:hive/hive.dart';
 //UTILS
 import '../../utils/strings.dart';
 
-part '../hive/ownership.g.dart';
+part 'ownership.g.dart';
 
 @HiveType(typeId: 11)
 enum Ownership {

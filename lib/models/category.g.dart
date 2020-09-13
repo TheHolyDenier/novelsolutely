@@ -1,38 +1,38 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../milestone.dart';
+part of 'category.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class MilestoneAdapter extends TypeAdapter<Milestone> {
+class CategoryAdapter extends TypeAdapter<Category> {
   @override
-  final int typeId = 7;
+  final int typeId = 0;
 
   @override
-  Milestone read(BinaryReader reader) {
+  Category read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Milestone(
-      id: fields[0] as int,
-      date: fields[1] as String,
-      description: fields[2] as String,
+    return Category(
+      id: fields[0] as String,
+      title: fields[1] as String,
+      milestones: (fields[2] as List)?.cast<Milestone>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, Milestone obj) {
+  void write(BinaryWriter writer, Category obj) {
     writer
       ..writeByte(3)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.date)
+      ..write(obj.title)
       ..writeByte(2)
-      ..write(obj.description);
+      ..write(obj.milestones);
   }
 
   @override
@@ -41,7 +41,7 @@ class MilestoneAdapter extends TypeAdapter<Milestone> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MilestoneAdapter &&
+      other is CategoryAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

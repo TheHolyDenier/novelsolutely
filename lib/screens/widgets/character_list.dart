@@ -11,6 +11,7 @@ import '../../models/dictionary.dart';
 //UTILS
 import '../../utils/strings.dart';
 import '../../utils/data.dart';
+import '../../utils/dimens.dart';
 
 class CharacterList extends StatefulWidget {
   final String id;
@@ -30,10 +31,7 @@ class _CharacterListState extends State<CharacterList> {
 
   void _filter() {
     _characters.sort((a, b) => a.name.compareTo(b.name));
-    print('tmp $_characters');
-
     _filteredCharacters = List.from(_characters);
-    print('tmp $_filteredCharacters');
     Map<String, int> tagMap = Map();
     _characters.forEach((character) {
       character.tags.forEach((tag) {
@@ -48,7 +46,7 @@ class _CharacterListState extends State<CharacterList> {
     var _tagsSorted = tagMap.entries.toList()
       ..sort((a, b) {
         var diff = b.value.compareTo(a.value);
-        if (diff == 0) diff = b.key.compareTo(a.key);
+        if (diff == 0) diff = a.key.compareTo(b.key);
         return diff;
       });
     _tags = [];
@@ -59,19 +57,21 @@ class _CharacterListState extends State<CharacterList> {
   @override
   Widget build(BuildContext context) {
     _characters = (Data.box.get(_id) as Dictionary).characters;
-    if (_characters != null && _characters.length > 0) _filter();
+    if (_characters != null && _characters.length > 0 && _tags == null)
+      _filter();
     return _characters != null
         ? Column(
             children: [
               ExpansionTile(
                 title: Text(Strings.filters),
                 children: [
-                  Wrap(
+                  Row(
                     children: [
-                      Container(
-                        margin: EdgeInsets.only(right: 8),
-                        child: _tagList(),
-                        width: MediaQuery.of(context).size.width - 80,
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(right: 8),
+                          child: _tagList(),
+                        ),
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -118,9 +118,8 @@ class _CharacterListState extends State<CharacterList> {
                 ],
               ),
             Card(
-              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              margin: EdgeInsets.symmetric(vertical: Dimens.small_vertical_margin),
               child: Container(
-                padding: EdgeInsets.all(10),
                 child: Row(
                   children: [
                     Expanded(

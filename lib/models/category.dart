@@ -4,9 +4,9 @@ import 'package:hive/hive.dart';
 //MODELS
 import './milestone.dart';
 
-part 'hive/category.g.dart';
+part 'category.g.dart';
 
-@HiveType(typeId: 3)
+@HiveType(typeId: 0)
 class Category {
   @HiveField(0)
   String id;

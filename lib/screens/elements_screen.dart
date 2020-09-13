@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 //WIDGETS
-import './widgets/elements_list.dart';
+import './widgets/character_list.dart';
 import './widgets/drawer_widget.dart';
 import './new_element_screen.dart';
 

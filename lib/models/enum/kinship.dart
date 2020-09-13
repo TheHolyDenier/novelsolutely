@@ -4,44 +4,44 @@ import 'package:hive/hive.dart';
 //UTILS
 import '../../utils/strings.dart';
 
-part '../hive/kinship.g.dart';
+part 'kinship.g.dart';
 
 @HiveType(typeId: 10)
 enum Kinship {
-@HiveField(0)
-PARENT,
-@HiveField(1)
-PARENT_IN_LAW,
-@HiveField(2)
-CHILD,
-@HiveField(3)
-CHILD_IN_LAW,
-@HiveField(4)
-PARTNER,
-@HiveField(5)
-GRANDPARENT,
-@HiveField(6)
-GRANDCHILD,
-@HiveField(7)
-SIBLING,
-@HiveField(8)
-SIBLING_IN_LAW,
-@HiveField(9)
-ANCESTOR,
-@HiveField(10)
-OFFSPRING,
-@HiveField(11)
-AUNCLE,
-@HiveField(12)
-NIBLING,
-@HiveField(13)
-EX_PARTNER,
-@HiveField(14)
-FRIENDSHIP,
-@HiveField(15)
-RIVAL,
-@HiveField(16)
-ENEMY,
+  @HiveField(0)
+  PARENT,
+  @HiveField(1)
+  PARENT_IN_LAW,
+  @HiveField(2)
+  CHILD,
+  @HiveField(3)
+  CHILD_IN_LAW,
+  @HiveField(4)
+  PARTNER,
+  @HiveField(5)
+  GRANDPARENT,
+  @HiveField(6)
+  GRANDCHILD,
+  @HiveField(7)
+  SIBLING,
+  @HiveField(8)
+  SIBLING_IN_LAW,
+  @HiveField(9)
+  ANCESTOR,
+  @HiveField(10)
+  OFFSPRING,
+  @HiveField(11)
+  AUNCLE,
+  @HiveField(12)
+  NIBLING,
+  @HiveField(13)
+  EX_PARTNER,
+  @HiveField(14)
+  FRIENDSHIP,
+  @HiveField(15)
+  RIVAL,
+  @HiveField(16)
+  ENEMY,
 }
 
 extension ParseToString on Kinship {

@@ -6,9 +6,9 @@ import 'package:hive/hive.dart';
 //MODELS
 import './enum/kinship.dart';
 
-part 'hive/relationship.g.dart';
+part 'relationship.g.dart';
 
-@HiveType(typeId: 2)
+@HiveType(typeId: 7)
 class Relationship {
   @HiveField(0)
   String id;

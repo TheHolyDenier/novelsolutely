@@ -14,9 +14,9 @@ import './owned.dart';
 //UTILS
 import '../utils/strings.dart';
 
-part 'hive/item.g.dart';
+part 'item.g.dart';
 
-@HiveType(typeId: 4)
+@HiveType(typeId: 3)
 class Item {
   @HiveField(0)
   String id;

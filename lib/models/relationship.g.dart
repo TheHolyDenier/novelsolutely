@@ -1,38 +1,41 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../category.dart';
+part of 'relationship.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class CategoryAdapter extends TypeAdapter<Category> {
+class RelationshipAdapter extends TypeAdapter<Relationship> {
   @override
-  final int typeId = 3;
+  final int typeId = 7;
 
   @override
-  Category read(BinaryReader reader) {
+  Relationship read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Category(
+    return Relationship(
       id: fields[0] as String,
-      title: fields[1] as String,
-      milestones: (fields[2] as List)?.cast<Milestone>(),
+      name: fields[1] as String,
+      idName: fields[2] as String,
+      kinship: fields[3] as Kinship,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Category obj) {
+  void write(BinaryWriter writer, Relationship obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.title)
+      ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.milestones);
+      ..write(obj.idName)
+      ..writeByte(3)
+      ..write(obj.kinship);
   }
 
   @override
@@ -41,7 +44,7 @@ class CategoryAdapter extends TypeAdapter<Category> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CategoryAdapter &&
+      other is RelationshipAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
