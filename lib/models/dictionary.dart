@@ -5,7 +5,6 @@ import 'package:hive/hive.dart';
 import './character.dart';
 import './item.dart';
 import './other.dart';
-import './place.dart';
 
 part 'hive/dictionary.g.dart';
 
@@ -27,7 +26,7 @@ class Dictionary extends HiveObject {
   List<Character> characters;
 
   @HiveField(5)
-  List<Place> places;
+  List<Item> places;
 
   @HiveField(6)
   List<Item> items;

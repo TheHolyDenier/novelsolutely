@@ -22,7 +22,7 @@ class DictionaryAdapter extends TypeAdapter<Dictionary> {
       imagePath: fields[2] as String,
       characters: (fields[4] as List)?.cast<Character>(),
       favorite: fields[3] as bool,
-      places: (fields[5] as List)?.cast<Place>(),
+      places: (fields[5] as List)?.cast<Item>(),
       items: (fields[6] as List)?.cast<Item>(),
       others: (fields[7] as List)?.cast<Other>(),
     );
