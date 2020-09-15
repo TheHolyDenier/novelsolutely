@@ -44,6 +44,6 @@ class Other {
         name: name,
         summary: summary,
         tags: tags,
-        imagePath: imagePath[0] ?? '');
+        imagePath: imagePath ?? '');
   }
 }

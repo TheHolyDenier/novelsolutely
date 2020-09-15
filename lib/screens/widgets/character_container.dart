@@ -67,7 +67,7 @@ class _CharacterContainerWidgetState extends State<CharacterContainerWidget> {
                   selected.any((tag) => character.tags.contains(tag)))
               .toList());
           setState(() {
-            
+
           });
         }),
         Expanded(

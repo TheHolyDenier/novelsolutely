@@ -2,21 +2,20 @@ import 'package:flutter/material.dart';
 
 //LIBRARIES
 import 'package:flutter_tags/flutter_tags.dart';
-import 'package:novelsolutely/models/dictionary.dart';
-import 'package:novelsolutely/utils/data.dart';
 
 //SCREENS && WIDGETS
-import './widgets/header_widget.dart';
 import './widgets/milestone_widget.dart';
 
 //MODELS
 import '../models/character.dart';
 import '../models/path_id.dart';
+import '../models/dictionary.dart';
 
 //UTILS
 import '../utils/strings.dart';
-import '../utils/dimens.dart';
 import '../utils/colors.dart';
+import '../utils/dimens.dart';
+import '../utils/data.dart';
 
 class CharacterScreen extends StatefulWidget {
   static const route = '/character';
@@ -26,15 +25,23 @@ class CharacterScreen extends StatefulWidget {
 }
 
 class _CharacterScreenState extends State<CharacterScreen> {
-  Character _character;
   final _tagStateKey = GlobalKey<TagsState>();
+  Character _character;
 
   @override
   Widget build(BuildContext context) {
-    PathId pathId = ModalRoute.of(context).settings.arguments;
-    if (_character == null) _character = (Data.box.get(pathId.dictionaryId) as Dictionary).characters.firstWhere((element) => element.id == pathId.elementId);
+    PathId pathId = ModalRoute
+        .of(context)
+        .settings
+        .arguments;
+    if (_character == null)
+      _character = (Data.box.get(pathId.dictionaryId) as Dictionary)
+          .characters
+          .firstWhere((element) => element.id == pathId.elementId);
 
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery
+        .of(context)
+        .size;
 
     return Scaffold(
       appBar: AppBar(
@@ -47,28 +54,14 @@ class _CharacterScreenState extends State<CharacterScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            HeaderWidget(
-              name: _character.name,
-              images: _character.imagePath ?? null,
-              height: size.height / 3,
-              width: size.width,
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(
-                vertical: Dimens.small_vertical_margin,
-                horizontal: Dimens.horizontal_margin,
-              ),
-              child: Text(
-                _character.summary,
-              ),
-            ),
+            SummaryInfoWidget(_character.toGeneric()),
             Divider(),
             Container(
               margin: EdgeInsets.symmetric(
                 vertical: Dimens.small_vertical_margin,
                 horizontal: Dimens.horizontal_margin,
               ),
-              child: ExpansionTile(
+              child: ExpansionTile( // TODO:  extract + callback
                 title: Text(Strings.filters),
                 children: [
                   Tags(
@@ -115,7 +108,8 @@ class _CharacterScreenState extends State<CharacterScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(onPressed: (){}, label: Text(Strings.add_category.toUpperCase())),
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {}, label: Text(Strings.add_category.toUpperCase())),
     );
   }
 
@@ -125,3 +119,4 @@ class _CharacterScreenState extends State<CharacterScreen> {
     });
   }
 }
+
