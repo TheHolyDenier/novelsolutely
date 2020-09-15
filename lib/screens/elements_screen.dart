@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 //WIDGETS
-import './widgets/character_list.dart';
+import './widgets/character_container.dart';
 import './widgets/drawer_widget.dart';
 import './new_element_screen.dart';
 
@@ -56,7 +56,7 @@ class _ElementsScreenState extends State<ElementsScreen> {
         child: IndexedStack(
           index: _index,
           children: [
-            CharacterList(dictionary.id),
+            CharacterContainerWidget(dictionary.id),
             Container(),
             Container(),
             Container(),

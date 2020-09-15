@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 
 //MODELS
 import './category.dart';
+import './generic.dart';
 
 //UTILS
 
@@ -36,4 +37,13 @@ class Other {
       @required this.tags,
       this.imagePath,
       this.milestones});
+
+  Generic toGeneric() {
+    return Generic(
+        id: id,
+        name: name,
+        summary: summary,
+        tags: tags,
+        imagePath: imagePath[0] ?? '');
+  }
 }

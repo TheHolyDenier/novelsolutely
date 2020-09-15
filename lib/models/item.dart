@@ -10,6 +10,7 @@ import 'package:uuid/uuid.dart';
 import './milestone.dart';
 import './category.dart';
 import './owned.dart';
+import './generic.dart';
 
 //UTILS
 import '../utils/strings.dart';
@@ -51,5 +52,14 @@ class Item {
         id: Uuid().v1(),
         title: Strings.appearance,
         milestones: milestones ?? []);
+  }
+
+  Generic toGeneric() {
+    return Generic(
+        id: id,
+        name: name,
+        summary: summary,
+        tags: tags,
+        imagePath: imagePath[0] ?? '');
   }
 }

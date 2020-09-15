@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 //LIBRARIES
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:novelsolutely/models/dictionary.dart';
+import 'package:novelsolutely/utils/data.dart';
 
 //SCREENS && WIDGETS
 import './widgets/header_widget.dart';
@@ -9,6 +11,7 @@ import './widgets/milestone_widget.dart';
 
 //MODELS
 import '../models/character.dart';
+import '../models/path_id.dart';
 
 //UTILS
 import '../utils/strings.dart';
@@ -28,7 +31,9 @@ class _CharacterScreenState extends State<CharacterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _character = ModalRoute.of(context).settings.arguments;
+    PathId pathId = ModalRoute.of(context).settings.arguments;
+    if (_character == null) _character = (Data.box.get(pathId.dictionaryId) as Dictionary).characters.firstWhere((element) => element.id == pathId.elementId);
+
     final size = MediaQuery.of(context).size;
 
     return Scaffold(

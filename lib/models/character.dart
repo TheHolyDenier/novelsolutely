@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
+import './category.dart';
+import './generic.dart';
+
 //MODELS
 import './milestone.dart';
 import './relationship.dart';
-import './category.dart';
 
 //UTILS
 import '../utils/strings.dart';
@@ -63,5 +65,14 @@ class Character {
   @override
   String toString() {
     return '$name';
+  }
+
+  Generic toGeneric() {
+    return Generic(
+        id: id,
+        name: name,
+        summary: summary,
+        tags: tags,
+        imagePath: imagePath[0] ?? '');
   }
 }
