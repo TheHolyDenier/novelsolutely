@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 //LIBRARIES
-import 'package:hive/hive.dart';
-import 'package:uuid/uuid.dart';
 
 //SCREENS && WIDGETS
-import './elements_screen.dart';
+import './dictionary_screen.dart';
 import './dialogs/delete_dialog.dart';
 import './widgets/image_widget.dart';
 
@@ -190,7 +188,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void _onTapItem(String id) {
     if (_selected.isEmpty) {
-      Navigator.pushReplacementNamed(context, ElementsScreen.route,
+      Navigator.pushReplacementNamed(context, DictionaryScreen.route,
           arguments: id);
     } else {
       _onLongClickItem(id);

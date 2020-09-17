@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 //LIBRARIES
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:novelsolutely/screens/widgets/header_widget.dart';
+
+import './dialogs/generic_input_dialog.dart';
+import './dialogs/images_input_dialog.dart';
 
 //SCREENS && WIDGETS
 import './widgets/milestone_widget.dart';
-import './widgets/summary_info_widget.dart';
-import './dialogs/generic_input_dialog.dart';
-import './dialogs/images_input_dialog.dart';
 
 //MODELS
 import '../models/character.dart';
@@ -15,12 +16,11 @@ import '../models/dictionary.dart';
 import '../models/path_id.dart';
 import '../utils/colors.dart';
 import '../utils/data.dart';
+import '../utils/dialog_anim.dart';
 import '../utils/dimens.dart';
 
 //UTILS
 import '../utils/strings.dart';
-import '../utils/dialog_anim.dart';
-
 
 class CharacterScreen extends StatefulWidget {
   static const route = '/character';
@@ -32,15 +32,14 @@ class CharacterScreen extends StatefulWidget {
 class _CharacterScreenState extends State<CharacterScreen> {
   final _tagStateKey = GlobalKey<TagsState>();
   Character _character;
+  Dictionary _dictionary;
+
+  GlobalKey<HeaderWidgetState> _keyChild = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     PathId pathId = ModalRoute.of(context).settings.arguments;
-    if (_character == null)
-      _character = (Data.box.get(pathId.dictionaryId) as Dictionary)
-          .characters
-          .firstWhere((element) => element.id == pathId.elementId);
-
+    _setCharacter(pathId);
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -66,14 +65,29 @@ class _CharacterScreenState extends State<CharacterScreen> {
             onPressed: () => DialogAnimation.openDialog(
               context,
               ImagesInputDialog(_character.toGeneric()),
-            ),
+            ).then((value) => _saveImages(value)),
           ),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SummaryInfoWidget(_character.toGeneric(), size),
+            HeaderWidget(
+              name: _character.name,
+              images: _character.imagePath ?? null,
+              height: size.height / 3,
+              width: size.width,
+             key: _keyChild
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                vertical: Dimens.small_vertical_margin,
+                horizontal: Dimens.horizontal_margin,
+              ),
+              child: Text(
+                _character.summary,
+              ),
+            ),
             Divider(),
             Container(
               margin: EdgeInsets.symmetric(
@@ -133,9 +147,28 @@ class _CharacterScreenState extends State<CharacterScreen> {
     );
   }
 
+  void _setCharacter(PathId pathId) {
+    if (_character == null) {
+      _dictionary = (Data.box.get(pathId.dictionaryId) as Dictionary);
+      _character = _dictionary.characters
+          .firstWhere((element) => element.id == pathId.elementId);
+    }
+  }
+
   void removeItem(int index) {
     setState(() {
       _character.tags.removeAt(index);
     });
+  }
+
+  _saveImages(List<String> images) {
+    if (images != null && images.length > 0) {
+      setState(() {
+
+      _character.imagePath = [...images];
+      _dictionary.save();
+      });
+    }
+    _keyChild.currentState.updateImages(images);
   }
 }

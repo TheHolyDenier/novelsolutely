@@ -64,7 +64,7 @@ class _DictionaryInputDialogState extends State<DictionaryInputDialog> {
       ),
       actions: [
         FlatButton(
-          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+          onPressed: () => Navigator.pop(context),
           child: Text(Strings.cancel.toUpperCase()),
         ),
         FlatButton(

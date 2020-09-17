@@ -15,14 +15,14 @@ import '../utils/data.dart';
 import '../utils/routes.dart';
 
 
-class ElementsScreen extends StatefulWidget {
+class DictionaryScreen extends StatefulWidget {
   static const route = "/characters";
 
   @override
-  _ElementsScreenState createState() => _ElementsScreenState();
+  _DictionaryScreenState createState() => _DictionaryScreenState();
 }
 
-class _ElementsScreenState extends State<ElementsScreen> {
+class _DictionaryScreenState extends State<DictionaryScreen> {
   int _index = 0;
 
   @override

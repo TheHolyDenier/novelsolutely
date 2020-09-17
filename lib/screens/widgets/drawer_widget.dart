@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 //WIDGETS
 import './image_widget.dart';
-import '../elements_screen.dart';
+import '../dictionary_screen.dart';
 import '../main_screen.dart';
 import '../dialogs/dictionary_input_dialog.dart';
 import '../dialogs/delete_dialog.dart';
@@ -100,7 +100,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     child: ListTile(
                       onTap: () {
                         Navigator.pushReplacementNamed(
-                            context, ElementsScreen.route,
+                            context, DictionaryScreen.route,
                             arguments: dictionary.id);
                       },
                       leading: Container(

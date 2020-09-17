@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 //SCREENS && WIDGETS
 import './image_widget.dart';
 
-//MODELS
-
 //UTILS
 import '../../utils/colors.dart';
 
@@ -12,20 +10,23 @@ class HeaderWidget extends StatefulWidget {
   final String name;
   final List<String> images;
   final double height, width;
+  final GlobalKey<HeaderWidgetState> key;
 
-  HeaderWidget({this.name, this.images, this.height, this.width});
+  HeaderWidget({this.name, this.images, this.height, this.width, this.key});
 
   @override
-  _HeaderWidgetState createState() =>
-      _HeaderWidgetState(this.name, this.images, this.height, this.width);
+  HeaderWidgetState createState() => HeaderWidgetState(
+      this.name, this.images, this.height, this.width, this.key);
 }
 
-class _HeaderWidgetState extends State<HeaderWidget> {
+class HeaderWidgetState extends State<HeaderWidget> {
   final String _name;
-  final List<String> _images;
+  List<String> _images;
   final double _height, _width;
+  GlobalKey<HeaderWidgetState> key;
 
-  _HeaderWidgetState(this._name, this._images, this._height, this._width);
+  HeaderWidgetState(
+      this._name, this._images, this._height, this._width, this.key);
 
   final double _max = 15, _min = 10;
   final _controller = PageController(initialPage: 0);
@@ -94,5 +95,11 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         ),
       ),
     );
+  }
+
+  void updateImages(List<String> images) {
+    setState(() {
+      _images = images;
+    });
   }
 }

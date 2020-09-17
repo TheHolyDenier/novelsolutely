@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 //WIDGETS
 import '../screens/character_screen.dart';
-import '../screens/elements_screen.dart';
+import '../screens/dictionary_screen.dart';
 import '../screens/main_screen.dart';
 import '../screens/milestone_screen.dart';
 import '../screens/new_element_screen.dart';
@@ -17,7 +17,7 @@ import '../utils/strings.dart';
 class Routes {
   static Map<String, WidgetBuilder> routes = {
     MainScreen.route: (context) => MainScreen(),
-    ElementsScreen.route: (context) => ElementsScreen(),
+    DictionaryScreen.route: (context) => DictionaryScreen(),
     CharacterScreen.route: (context) => CharacterScreen(),
     MilestoneScreen.route: (context) => MilestoneScreen(),
     NewElementScreen.route: (context) => NewElementScreen(),
