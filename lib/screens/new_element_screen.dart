@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
-//LIBRARIES
-import 'package:uuid/uuid.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 
-//WIDGETS
-import '../screens/widgets/image_widget.dart';
+//LIBRARIES
+import 'package:uuid/uuid.dart';
+
+import '../models/character.dart';
 
 //MODELS
 import '../models/dictionary.dart';
-import '../models/character.dart';
+
+//WIDGETS
+import '../screens/widgets/image_widget.dart';
+import '../utils/colors.dart';
 
 //UTILS
 import '../utils/data.dart';
-import '../utils/strings.dart';
 import '../utils/dimens.dart';
 import '../utils/routes.dart';
-import '../utils/colors.dart';
+import '../utils/strings.dart';
 
 class NewElementScreen extends StatefulWidget {
   static const route = '/new';
@@ -279,16 +281,17 @@ class _NewElementScreenState extends State<NewElementScreen> {
   }
 
   void _saveCharacter() {
-    var name = '${_surnameController.text},';
-    if (_nameController.text.isNotEmpty) name += ' ${_nameController.text}';
-    if (_nicknameController.text.isNotEmpty)
-      name += ' «${_nicknameController.text}»';
+    var name = '${_surnameController.text.trim()},';
+    if (_nameController.text.trim().isNotEmpty)
+      name += ' ${_nameController.text.trim()}';
+    if (_nicknameController.text.trim().isNotEmpty)
+      name += ' «${_nicknameController.text.trim()}»';
     Character character = Character(
       id: Uuid().v1(),
       name: name,
       tags: _tags != null && _tags.length > 0 ? _tags : [Strings.no_filter],
-      summary: _summaryController.text,
-      imagePath: [_imageController.text],
+      summary: _summaryController.text.trim(),
+      imagePath: [_imageController.text.trim()],
     );
     if (_dictionary.characters == null) _dictionary.characters = [];
     setState(() {

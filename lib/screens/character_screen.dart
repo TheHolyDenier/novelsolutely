@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 
 //LIBRARIES
 import 'package:flutter_tags/flutter_tags.dart';
-import 'package:novelsolutely/screens/widgets/header_widget.dart';
 
 import './dialogs/generic_input_dialog.dart';
 import './dialogs/images_input_dialog.dart';
 
 //SCREENS && WIDGETS
+import './widgets/header_widget.dart';
 import './widgets/milestone_widget.dart';
 
 //MODELS
 import '../models/character.dart';
+import '../models/character_name.dart';
 import '../models/dictionary.dart';
 import '../models/path_id.dart';
 import '../utils/colors.dart';
@@ -48,7 +49,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
           onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.keyboard_arrow_left),
         ),
-        title: Text(Strings.formatName(_character.name)),
+        title: Text(CharacterName.readableName(_character.name)),
         actions: [
           IconButton(
             icon: Icon(Icons.edit_outlined),
@@ -73,12 +74,11 @@ class _CharacterScreenState extends State<CharacterScreen> {
         child: Column(
           children: [
             HeaderWidget(
-              name: _character.name,
-              images: _character.imagePath ?? null,
-              height: size.height / 3,
-              width: size.width,
-             key: _keyChild
-            ),
+                name: _character.name,
+                images: _character.imagePath ?? null,
+                height: size.height / 3,
+                width: size.width,
+                key: _keyChild),
             Container(
               margin: EdgeInsets.symmetric(
                 vertical: Dimens.small_vertical_margin,
@@ -124,11 +124,11 @@ class _CharacterScreenState extends State<CharacterScreen> {
                             backgroundColor: Palette.white,
                             color: Palette.purple,
                             onRemoved: () {
-                              removeItem(index);
+                              _removeItem(index);
                               return true;
                             },
                           ),
-                          onPressed: (item) => removeItem(index), // OR null,
+                          onPressed: (item) => _removeItem(index), // OR null,
                         );
                       }),
                 ],
@@ -155,18 +155,17 @@ class _CharacterScreenState extends State<CharacterScreen> {
     }
   }
 
-  void removeItem(int index) {
+  void _removeItem(int index) {
     setState(() {
       _character.tags.removeAt(index);
     });
   }
 
-  _saveImages(List<String> images) {
+  void _saveImages(List<String> images) {
     if (images != null && images.length > 0) {
       setState(() {
-
-      _character.imagePath = [...images];
-      _dictionary.save();
+        _character.imagePath = [...images];
+        _dictionary.save();
       });
     }
     _keyChild.currentState.updateImages(images);

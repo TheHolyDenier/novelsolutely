@@ -89,9 +89,7 @@ class Strings {
 
   static const error_url = 'Introduzca una URL válida';
 
-  static String formatName(String name) {
-    return '${name.split(', ')[1]} ${name.split(', ')[0]}';
-  }
+
 
   static bool containsCaseInsensitive(String s, List<String> l) {
     for (String string in l) {
@@ -101,4 +99,6 @@ class Strings {
     }
     return false;
   }
+
+
 }

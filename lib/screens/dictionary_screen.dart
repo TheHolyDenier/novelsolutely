@@ -14,6 +14,13 @@ import '../utils/dimens.dart';
 import '../utils/data.dart';
 import '../utils/routes.dart';
 
+//TODO: fix screen not reloading when new characters are added!!
+//TODO: delete characters
+//TODO: add milestones
+//TODO: add new categories
+//TODO: add other elements
+//TODO: export database to JSON
+//TODO: quick add elements
 
 class DictionaryScreen extends StatefulWidget {
   static const route = "/characters";

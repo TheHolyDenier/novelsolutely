@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 //MODELS
 import '../../models/generic.dart';
-import '../../utils/dimens.dart';
+import '../../models/character_name.dart';
 
 //UTILS
 import '../../utils/strings.dart';
+import '../../utils/dimens.dart';
 
 class GenericInputDialog extends StatefulWidget {
   final bool isCharacter;
@@ -19,10 +20,20 @@ class GenericInputDialog extends StatefulWidget {
 }
 
 class _GenericInputDialogState extends State<GenericInputDialog> {
-  Generic _generic;
   final bool _isCharacter;
+  Generic _generic; 
 
-  _GenericInputDialogState(this._generic, this._isCharacter);
+  _GenericInputDialogState(this._generic, this._isCharacter) {
+    if (_isCharacter) {
+      CharacterName name = CharacterName(_generic.name);
+      _nameController.text = name.name;
+      _nicknameController.text = name.nickname;
+      _surnameController.text = name.surname;
+    } else {
+      _nameController.text = _generic.name;
+    }
+    _summaryController.text = _generic.summary;
+  }
 
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
@@ -33,7 +44,7 @@ class _GenericInputDialogState extends State<GenericInputDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('${Strings.edit} a ${_generic.name}'),
+      title: Text('${Strings.edit} a ${CharacterName.readableName(_generic.name)}'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -53,12 +64,16 @@ class _GenericInputDialogState extends State<GenericInputDialog> {
         ),
       ),
       actions: [
-        FlatButton(onPressed: () {
-          Navigator.pop(context);
-        }, child: Text(Strings.cancel.toUpperCase())),
-        FlatButton(onPressed: () {
-        //  TODO: SAVE
-        }, child: Text(Strings.save.toUpperCase())),
+        FlatButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(Strings.cancel.toUpperCase())),
+        FlatButton(
+            onPressed: () {
+              //  TODO: SAVE
+            },
+            child: Text(Strings.save.toUpperCase())),
       ],
     );
   }
