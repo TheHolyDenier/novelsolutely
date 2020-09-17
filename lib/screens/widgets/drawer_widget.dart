@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 
 //WIDGETS
 import './image_widget.dart';
-import '../dictionary_screen.dart';
 import '../main_screen.dart';
-import '../dialogs/dictionary_input_dialog.dart';
+import '../dictionary_screen.dart';
+import '../import_text_screen.dart';
 import '../dialogs/delete_dialog.dart';
-
+import '../dialogs/dictionary_input_dialog.dart';
 //MODELS
 import '../../models/dictionary.dart';
 
 //UTILS
 import '../../utils/colors.dart';
-import '../../utils/strings.dart';
 import '../../utils/data.dart';
 import '../../utils/dialog_anim.dart';
+import '../../utils/strings.dart';
+
 
 class DrawerWidget extends StatefulWidget {
   final Dictionary _active;
@@ -90,6 +91,22 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             onTap: _deleteDictionary,
             leading: Icon(Icons.delete),
             title: Text('${Strings.delete} ${_active.name}'),
+          ),
+          Divider(),
+          ListTile(
+            onTap: () => Navigator.pushNamed(context, ImportTextScreen.route),
+            leading: Icon(Icons.import_contacts),
+            title: Text(Strings.import_from_text),
+          ),
+          ListTile(
+            onTap: null,
+            leading: Icon(Icons.attach_file_outlined),
+            title: Text(Strings.import_from_file),
+          ),
+          ListTile(
+            onTap: null,
+            leading: Icon(Icons.save_alt),
+            title: Text(Strings.export_file),
           ),
           Divider(),
           for (final dictionary in dictionaries)

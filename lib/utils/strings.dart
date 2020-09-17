@@ -1,5 +1,3 @@
-import 'package:flutter/src/widgets/framework.dart';
-
 class Strings {
   static const app_name = 'novelsolutely';
   static const create = 'CREAR';
@@ -89,7 +87,18 @@ class Strings {
 
   static const error_url = 'Introduzca una URL válida';
 
+  static const import_from_text = 'Importar desde archivo de texto';
+  static const import_from_file = 'Importar archivos de $app_name';
+  static const export_file = 'Exportar archivo de $app_name';
 
+  static const copy_text = 'Texto a importar';
+
+  static const chose_settings = 'Configuración de la importación';
+
+  static const paragraph_breakpoint = 'Párrafos diferentes';
+  static const character_breakpoint = 'Por carácter';
+
+  static const check_format = 'Asegúrase de que el formato corresponde al siguiente.';
 
   static bool containsCaseInsensitive(String s, List<String> l) {
     for (String string in l) {
@@ -99,6 +108,4 @@ class Strings {
     }
     return false;
   }
-
-
 }

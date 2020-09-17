@@ -1,3 +1,6 @@
+//MODELS
+import 'character.dart';
+
 class Generic {
   String id;
   String name;
@@ -6,4 +9,13 @@ class Generic {
   List<String> tags;
 
   Generic({this.id, this.name, this.summary, this.imagePath, this.tags});
+
+  Character toCharacter() {
+    return Character(
+        id: id,
+        name: name,
+        summary: summary,
+        tags: tags,
+        imagePath: imagePath ?? []);
+  }
 }

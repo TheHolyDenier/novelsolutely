@@ -7,6 +7,7 @@ import '../screens/dictionary_screen.dart';
 import '../screens/main_screen.dart';
 import '../screens/milestone_screen.dart';
 import '../screens/new_element_screen.dart';
+import '../screens/import_text_screen.dart';
 
 //MODELS
 import '../models/item_navigation.dart';
@@ -21,6 +22,7 @@ class Routes {
     CharacterScreen.route: (context) => CharacterScreen(),
     MilestoneScreen.route: (context) => MilestoneScreen(),
     NewElementScreen.route: (context) => NewElementScreen(),
+    ImportTextScreen.route: (context) => ImportTextScreen(),
   };
 
   static const box = 'dictionaries';
