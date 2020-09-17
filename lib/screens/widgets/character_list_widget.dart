@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novelsolutely/models/character.dart';
 //SCREENS
 import '../character_screen.dart';
 
@@ -21,7 +22,7 @@ class CharacterListWidget extends StatelessWidget {
     return ListView.builder(
       itemCount: _filtered.length,
       itemBuilder: (context, index) {
-        var character = _filtered[index];
+        Generic character = _filtered[index];
         return Column(
           children: [
             if (index == 0 || character.name[0] != _filtered[index - 1].name[0])
@@ -51,7 +52,7 @@ class CharacterListWidget extends StatelessWidget {
                             child: ClipOval(
                               child: ImageWidget(
                                   url: character.imagePath != null
-                                      ? character.imagePath
+                                      ? character.imagePath[0]
                                       : ''),
                             ),
                           ),

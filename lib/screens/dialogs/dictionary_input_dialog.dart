@@ -6,21 +6,21 @@ import '../widgets/image_widget.dart';
 //UTILS
 import '../../utils/strings.dart';
 
-class TitleInputDialog extends StatefulWidget {
+class DictionaryInputDialog extends StatefulWidget {
   final String name;
   final String image;
 
-  TitleInputDialog({this.name, this.image});
+  DictionaryInputDialog({this.name, this.image});
 
   @override
-  _TitleInputDialogState createState() =>
-      _TitleInputDialogState(name: name ?? null, image: image ?? null);
+  _DictionaryInputDialogState createState() =>
+      _DictionaryInputDialogState(name: name ?? null, image: image ?? null);
 }
 
-class _TitleInputDialogState extends State<TitleInputDialog> {
+class _DictionaryInputDialogState extends State<DictionaryInputDialog> {
   bool _newDictionary = true;
 
-  _TitleInputDialogState({String name, String image}) {
+  _DictionaryInputDialogState({String name, String image}) {
     if (name != null) {
       _controllerName.text = name;
       _newDictionary = false;

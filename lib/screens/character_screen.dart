@@ -5,17 +5,22 @@ import 'package:flutter_tags/flutter_tags.dart';
 
 //SCREENS && WIDGETS
 import './widgets/milestone_widget.dart';
+import './widgets/summary_info_widget.dart';
+import './dialogs/generic_input_dialog.dart';
+import './dialogs/images_input_dialog.dart';
 
 //MODELS
 import '../models/character.dart';
-import '../models/path_id.dart';
 import '../models/dictionary.dart';
+import '../models/path_id.dart';
+import '../utils/colors.dart';
+import '../utils/data.dart';
+import '../utils/dimens.dart';
 
 //UTILS
 import '../utils/strings.dart';
-import '../utils/colors.dart';
-import '../utils/dimens.dart';
-import '../utils/data.dart';
+import '../utils/dialog_anim.dart';
+
 
 class CharacterScreen extends StatefulWidget {
   static const route = '/character';
@@ -30,18 +35,13 @@ class _CharacterScreenState extends State<CharacterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    PathId pathId = ModalRoute
-        .of(context)
-        .settings
-        .arguments;
+    PathId pathId = ModalRoute.of(context).settings.arguments;
     if (_character == null)
       _character = (Data.box.get(pathId.dictionaryId) as Dictionary)
           .characters
           .firstWhere((element) => element.id == pathId.elementId);
 
-    final size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       appBar: AppBar(
@@ -50,18 +50,38 @@ class _CharacterScreenState extends State<CharacterScreen> {
           icon: Icon(Icons.keyboard_arrow_left),
         ),
         title: Text(Strings.formatName(_character.name)),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit_outlined),
+            onPressed: () => DialogAnimation.openDialog(
+              context,
+              GenericInputDialog(
+                _character.toGeneric(),
+                isCharacter: true,
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.add_a_photo_outlined),
+            onPressed: () => DialogAnimation.openDialog(
+              context,
+              ImagesInputDialog(_character.toGeneric()),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SummaryInfoWidget(_character.toGeneric()),
+            SummaryInfoWidget(_character.toGeneric(), size),
             Divider(),
             Container(
               margin: EdgeInsets.symmetric(
                 vertical: Dimens.small_vertical_margin,
                 horizontal: Dimens.horizontal_margin,
               ),
-              child: ExpansionTile( // TODO:  extract + callback
+              child: ExpansionTile(
+                // TODO:  extract + callback
                 title: Text(Strings.filters),
                 children: [
                   Tags(
@@ -119,4 +139,3 @@ class _CharacterScreenState extends State<CharacterScreen> {
     });
   }
 }
-

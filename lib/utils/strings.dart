@@ -1,3 +1,5 @@
+import 'package:flutter/src/widgets/framework.dart';
+
 class Strings {
   static const app_name = 'novelsolutely';
   static const create = 'CREAR';
@@ -82,6 +84,10 @@ class Strings {
   static const no_filter = 'Sin filtro';
 
   static const add_category = 'Nueva categoría';
+
+  static const add_images = 'Editar imágenes';
+
+  static const error_url = 'Introduzca una URL válida';
 
   static String formatName(String name) {
     return '${name.split(', ')[1]} ${name.split(', ')[0]}';

@@ -4,7 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
 //WIDGETS
-import '../screens/dialogs/title_dialog.dart';
+import '../screens/dialogs/dictionary_input_dialog.dart';
 
 //MODELS
 import '../models/dictionary.dart';
@@ -42,7 +42,7 @@ class Data {
   }
 
   static void add(BuildContext context) =>
-      DialogAnimation.openDialog(context, TitleInputDialog())
+      DialogAnimation.openDialog(context, DictionaryInputDialog())
           .then((value) => _addDictionary(value[0], image: value[1]));
 
   static void delete(String id) => Data.box.delete(id);

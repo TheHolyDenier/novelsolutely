@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import './image_widget.dart';
 import '../elements_screen.dart';
 import '../main_screen.dart';
-import '../dialogs/title_dialog.dart';
+import '../dialogs/dictionary_input_dialog.dart';
 import '../dialogs/delete_dialog.dart';
 
 //MODELS
@@ -126,7 +126,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   void _edit(BuildContext context) {
     DialogAnimation.openDialog(
         context,
-        TitleInputDialog(
+        DictionaryInputDialog(
           name: _active.name,
           image: _active.imagePath ?? null,
         )).then((value) {
