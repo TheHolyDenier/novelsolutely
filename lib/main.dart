@@ -66,6 +66,9 @@ class MyApp extends StatelessWidget {
         ),
         floatingActionButtonTheme:
             FloatingActionButtonThemeData(backgroundColor: Palette.green),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Palette.green,
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: Routes.routes,

@@ -94,7 +94,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
           Divider(),
           ListTile(
-            onTap: () => Navigator.pushNamed(context, ImportTextScreen.route),
+            onTap: () => Navigator.pushNamed(context, ImportTextScreen.route, arguments: _active.id),
             leading: Icon(Icons.import_contacts),
             title: Text(Strings.import_from_text),
           ),

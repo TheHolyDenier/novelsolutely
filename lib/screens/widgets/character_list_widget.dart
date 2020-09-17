@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:novelsolutely/models/character.dart';
-//SCREENS
-import '../character_screen.dart';
 
 //MODELS
 import '../../models/generic.dart';
-import '../../utils/dimens.dart';
 import '../../models/path_id.dart';
+import '../../utils/dimens.dart';
+
+//SCREENS
+import '../character_screen.dart';
 
 //WIDGETS
 import '../widgets/image_widget.dart';
@@ -51,7 +51,8 @@ class CharacterListWidget extends StatelessWidget {
                             height: 50,
                             child: ClipOval(
                               child: ImageWidget(
-                                  url: character.imagePath != null
+                                  url: character.imagePath != null &&
+                                          character.imagePath.length > 0
                                       ? character.imagePath[0]
                                       : ''),
                             ),

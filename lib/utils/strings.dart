@@ -100,6 +100,8 @@ class Strings {
 
   static const check_format = 'Asegúrase de que el formato corresponde al siguiente.';
 
+  static const select_file = 'Buscar archivo';
+
   static bool containsCaseInsensitive(String s, List<String> l) {
     for (String string in l) {
       if (string.toLowerCase() == s.toLowerCase()) {

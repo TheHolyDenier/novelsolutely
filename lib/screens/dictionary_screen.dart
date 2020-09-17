@@ -21,6 +21,7 @@ import '../utils/routes.dart';
 //TODO: add other elements
 //TODO: export database to JSON
 //TODO: quick add elements
+//TODO: search by name/summary
 
 class DictionaryScreen extends StatefulWidget {
   static const route = "/characters";
