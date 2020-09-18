@@ -15,7 +15,6 @@ import '../utils/colors.dart';
 import '../utils/data.dart';
 import '../utils/dimens.dart';
 import '../utils/routes.dart';
-import '../utils/strings.dart';
 
 //TODO: add milestones
 //TODO: add new categories
@@ -33,19 +32,27 @@ class DictionaryScreen extends StatefulWidget {
 
 class _DictionaryScreenState extends State<DictionaryScreen> {
   int _index = 0;
-  GlobalKey<GenericContainerWidgetState> _childKey = GlobalKey();
+  List<GlobalKey<GenericContainerWidgetState>> _keys = [
+    GlobalKey(debugLabel: Routes.navigation[0].title),
+    GlobalKey(debugLabel: Routes.navigation[1].title),
+    GlobalKey(debugLabel: Routes.navigation[2].title),
+    GlobalKey(debugLabel: Routes.navigation[3].title)
+  ];
   bool _selecting = false;
+  Size _size;
 
   @override
   Widget build(BuildContext context) {
     String id = ModalRoute.of(context).settings.arguments;
     Dictionary dictionary = Data.box.get(id);
+    _size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         leading: _selecting
             ? IconButton(
                 icon: Icon(Icons.close),
-                onPressed: () => _childKey.currentState
+                onPressed: () => _keys[_index]
+                    .currentState
                     .parentComm(NovelEventType.DESELECT_ALL_CHAR),
               )
             : null,
@@ -54,7 +61,8 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
           _selecting
               ? IconButton(
                   icon: const Icon(Icons.delete),
-                  onPressed: () => _childKey.currentState
+                  onPressed: () => _keys[_index]
+                      .currentState
                       .parentComm(NovelEventType.REMOVE_ALL_CHAR),
                 )
               : IconButton(
@@ -82,28 +90,28 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
         child: IndexedStack(
           index: _index,
           children: [
-            GenericContainerWidget(
-              dictionary.id,
-              key: _childKey,
-              callback: (NovelEventType novelEventType) =>
-                  _receiveEvent(novelEventType),
-              type: Strings.characters,
-            ),
-            Container(),
-            Container(),
-            Container(),
+            for (var i = 0; i < Routes.navigation.length; i++)
+              GenericContainerWidget(
+                dictionary.id,
+                key: _keys[i],
+                callback: (NovelEventType novelEventType) =>
+                    _receiveEvent(novelEventType),
+                type: Routes.navigation[i].title,
+              ),
           ],
         ),
       ),
       bottomNavigationBar: BottomAppBar(
         child: Container(
+          margin: EdgeInsets.only(left: 15.0, right: 40.0),
           height: Dimens.bottom_app_bar,
           child: Row(
-            mainAxisSize: MainAxisSize.max,
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               for (var i = 0; i < Routes.navigation.length; i++)
                 Container(
+                  width: 80.0,
                   child: InkWell(
                     onTap: () {
                       setState(() {

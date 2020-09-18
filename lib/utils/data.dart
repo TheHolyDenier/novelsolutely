@@ -53,7 +53,7 @@ class Data {
           .removeWhere((element) => element.id == idCharacter);
 
   static List<Generic> listToGeneric(String id, String type) {
-    List<Generic> generics;
+    List<Generic> generics = [];
     switch (type) {
       case Strings.characters:
         generics = _charactersToGeneric(id);
