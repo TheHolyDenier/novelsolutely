@@ -50,7 +50,6 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
   void _filter({bool force = false}) {
     // _elements = (Data.box.get(_idDictionary) as Dictionary).characters;
     _elements = Data.listToGeneric(_idDictionary, typeElement);
-    print('tmp personajes total: ${_elements.length}');
     if ((_elements != null && _elements.length > 0) || force) {
       _elements.sort((a, b) => a.name.compareTo(b.name));
       _filtered = List.from(_elements);
@@ -179,9 +178,6 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
   }
 
   void _selectDeselect(Generic element) {
-    print('tmp selected: ${_selected.length}');
-    print('tmp selected: ${element.name}');
-    print('tmp selected: ${_selected.contains(element.id)}');
     if (_selected.contains(element.id)) {
       setState(() {
         _selected.remove(element.id);
@@ -191,7 +187,6 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
         _selected.add(element.id);
       });
     }
-    print('tmp selected: ${_selected.contains(element.id)}');
 
     callback(_selected.isEmpty
         ? NovelEventType.NO_CHAR_SELECTED

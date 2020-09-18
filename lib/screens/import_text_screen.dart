@@ -323,8 +323,6 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
         startChar: _startCharController.text.trim() ?? '«',
         endChar: _endCharController.text.trim() ?? '»');
 
-    print('tmp ${characterName.registerName()}');
-    print('tmp $characterName');
     return _getGeneric(characterName.registerName(), summary);
   }
 
