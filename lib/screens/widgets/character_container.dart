@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 
+//VIEWS
 import './image_widget.dart';
 import './tag_widget.dart';
+import '../character_screen.dart';
+import '../dialogs/delete_dialog.dart';
 
 //MODELS
-import '../../models/character.dart';
 import '../../models/enum/novel_event_type.dart';
 import '../../models/generic.dart';
 import '../../models/path_id.dart';
-import '../../utils/colors.dart';
 
 //UTILS
 import '../../utils/data.dart';
 import '../../utils/dialog_anim.dart';
 import '../../utils/dimens.dart';
-import '../character_screen.dart';
-import '../dialogs/delete_dialog.dart';
+import '../../utils/colors.dart';
+
 
 typedef GenericContainerCallback = void Function(NovelEventType novelEventType);
 

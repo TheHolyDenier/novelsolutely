@@ -2,20 +2,16 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
-
+//MODELS
 import '../models/dictionary.dart';
-import '../models/enum/ownership.dart';
 import '../models/generic.dart';
-import '../models/owned.dart';
-import '../models/owned.dart';
-import '../models/owned.dart';
+//VIEWS
 import '../screens/dialogs/dictionary_input_dialog.dart';
 
 //UTILS
-import '../utils/routes.dart';
-import 'dialog_anim.dart';
-import 'routes.dart';
-import 'strings.dart';
+import './routes.dart';
+import './dialog_anim.dart';
+import './strings.dart';
 
 class Data {
   static Box _box;
