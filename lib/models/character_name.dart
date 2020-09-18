@@ -5,20 +5,23 @@ class CharacterName {
 
   CharacterName(String fullName,
       {String startChar = '«', String endChar = '»'}) {
+    print('tmp $fullName');
     if (fullName.lastIndexOf(',') != -1) {
       final List<String> surnameName = fullName.split(',');
-      this.surname = surnameName[0].trim() ?? '';
-      if (surnameName[1].lastIndexOf(startChar) != -1) {
-        final List<String> nameNick = surnameName[1].split(startChar);
-        this.name = nameNick[0].trim() ?? '';
+      print('tmp $surnameName');
+      this.surname = surnameName[0].trim() ?? '?';
+      final List<String> nameNick = surnameName[1].split(startChar);
+      print('tmp $nameNick, ${nameNick.length}');
+      this.name = nameNick[0].trim() ?? '?';
+      if (nameNick.length == 2) {
         this.nickname = nameNick[1].replaceFirst(endChar, '').trim() ?? '';
       } else {
-        this.name = surnameName[1].trim() ?? '';
+        this.nickname = '';
       }
     } else {
-      this.name = '';
+      this.name = '?';
       this.nickname = fullName;
-      this.surname = '';
+      this.surname = '?';
     }
   }
 
@@ -27,11 +30,12 @@ class CharacterName {
   }
 
   String registerName() {
-    return '$surname, $name ${nickname.isNotEmpty ? "«$nickname»" : ""}';
+    return '$surname, $name ${nickname != null && nickname.isNotEmpty ? "«$nickname»" : ""}';
   }
 
   @override
   String toString() {
-    return '$name ${nickname ?? ''} $surname'.trim();
+    if (nickname.isEmpty) return '$name $surname'.trim();
+    return '$name «$nickname» $surname'.trim();
   }
 }

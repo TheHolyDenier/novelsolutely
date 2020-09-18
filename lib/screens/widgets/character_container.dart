@@ -43,10 +43,10 @@ class CharacterContainerWidgetState extends State<CharacterContainerWidget> {
 
   CharacterContainerWidgetState(this._idDictionary, {this.key, this.callback});
 
-  void _filter() {
+  void _filter({bool force = false}) {
     _characters = (Data.box.get(_idDictionary) as Dictionary).characters;
     print('tmp personajes total: ${_characters.length}');
-    if (_characters != null && _characters.length > 0) {
+    if ((_characters != null && _characters.length > 0) || force) {
       _characters.sort((a, b) => a.name.compareTo(b.name));
       _filtered = List.from(_characters);
       Map<String, int> tagMap = Map();
@@ -59,8 +59,6 @@ class CharacterContainerWidgetState extends State<CharacterContainerWidget> {
           }
         });
       });
-
-      _selected = [];
 
       var _tagsSorted = tagMap.entries.toList()
         ..sort((a, b) {
@@ -176,6 +174,9 @@ class CharacterContainerWidgetState extends State<CharacterContainerWidget> {
   }
 
   void _selectDeselect(Character character) {
+    print('tmp selected: ${_selected.length}');
+    print('tmp selected: ${character.name}');
+    print('tmp selected: ${_selected.contains(character.id)}');
     if (_selected.contains(character.id)) {
       setState(() {
         _selected.remove(character.id);
@@ -185,6 +186,8 @@ class CharacterContainerWidgetState extends State<CharacterContainerWidget> {
         _selected.add(character.id);
       });
     }
+    print('tmp selected: ${_selected.contains(character.id)}');
+
     callback(_selected.isEmpty
         ? NovelEventType.NO_CHAR_SELECTED
         : NovelEventType.CHAR_SELECTED);
@@ -220,8 +223,9 @@ class CharacterContainerWidgetState extends State<CharacterContainerWidget> {
       });
       Data.box.get(_idDictionary).save();
       setState(() {
-        _filter();
+        _filter(force: true);
       });
+      if (_characters.isEmpty) callback(NovelEventType.NO_CHAR_SELECTED);
     }
   }
 }

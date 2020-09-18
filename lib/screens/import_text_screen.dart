@@ -53,76 +53,73 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
     id = ModalRoute.of(context).settings.arguments;
     _width = MediaQuery.of(context).size.width;
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(Strings.import_from_text),
       ),
-      body: Container(
-        padding: EdgeInsets.symmetric(
-          vertical: Dimens.vertical_margin,
-          horizontal: Dimens.horizontal_margin,
-        ),
-        width: _width,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _setSettings(),
-            SizedBox(
-              height: Dimens.small_vertical_margin,
-            ),
-            Text(
-              Strings.copy_text,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            SizedBox(
-              height: Dimens.small_vertical_margin,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: TextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  maxLength: 900,
-                  controller: _importController,
-                  onChanged: (value) {},
-                ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            vertical: Dimens.vertical_margin,
+            horizontal: Dimens.horizontal_margin,
+          ),
+          width: _width,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _setSettings(),
+              SizedBox(
+                height: Dimens.small_vertical_margin,
               ),
-            ),
-            SizedBox(
-              height: Dimens.small_vertical_margin,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                RaisedButton(
-                  onPressed: () {
-                    //  TODO: search file
-                  },
-                  child: Wrap(
-                    children: [
-                      Icon(Icons.attach_file),
-                      Text(Strings.select_file.toUpperCase())
-                    ],
+              Text(
+                Strings.copy_text,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              SizedBox(
+                height: Dimens.small_vertical_margin,
+              ),
+              TextField(
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                maxLength: 900,
+                controller: _importController,
+                onChanged: (value) {},
+              ),
+              SizedBox(
+                height: Dimens.small_vertical_margin,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  RaisedButton(
+                    onPressed: () {
+                      //  TODO: search file
+                    },
+                    child: Wrap(
+                      children: [
+                        Icon(Icons.attach_file),
+                        Text(Strings.select_file.toUpperCase())
+                      ],
+                    ),
                   ),
-                ),
-                RaisedButton(
-                  onPressed: () => _saveToFile(_importController.text.trim()),
-                  child: Wrap(
-                    children: [
-                      Icon(Icons.file_upload),
-                      Text(Strings.save.toUpperCase())
-                    ],
+                  RaisedButton(
+                    onPressed: () => _saveToFile(_importController.text.trim()),
+                    child: Wrap(
+                      children: [
+                        Icon(Icons.file_upload),
+                        Text(Strings.save.toUpperCase())
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: Dimens.small_vertical_margin,
-            ),
-          ],
+                ],
+              ),
+              SizedBox(
+                height: Dimens.small_vertical_margin,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -192,7 +189,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
           trailing: Container(
             width: 24.0,
             child: TextFormField(
-              controller: _paragraphController..text = ':',
+              controller: _paragraphController,
               textAlign: TextAlign.center,
               onChanged: (value) {
                 setState(() {});
@@ -295,16 +292,15 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
     //  TODO
   }
 
-  void _setByParagraph(int i, String name, String line, Dictionary dictionary) {
-
-  }
 
   Generic _genericIsCharacter(String completeName, String summary) {
     CharacterName characterName = CharacterName(completeName,
         startChar: _startCharController.text.trim() ?? '«',
         endChar: _endCharController.text.trim() ?? '»');
 
-    return _getGeneric(characterName.toString(), summary);
+    print('tmp ${characterName.registerName()}');
+    print('tmp $characterName');
+    return _getGeneric(characterName.registerName(), summary);
   }
 
   Generic _getGeneric(String name, String summary) {

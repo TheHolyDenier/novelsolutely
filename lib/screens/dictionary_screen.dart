@@ -16,8 +16,6 @@ import '../utils/data.dart';
 import '../utils/dimens.dart';
 import '../utils/routes.dart';
 
-//TODO: fix screen not reloading when new characters are added!!
-//TODO: delete characters
 //TODO: add milestones
 //TODO: add new categories
 //TODO: add other elements

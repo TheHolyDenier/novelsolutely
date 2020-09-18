@@ -95,7 +95,6 @@ class _CharacterScreenState extends State<CharacterScreen> {
                 horizontal: Dimens.horizontal_margin,
               ),
               child: ExpansionTile(
-                // TODO:  extract + callback
                 title: Text(Strings.filters),
                 children: [
                   Tags(
