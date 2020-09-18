@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
@@ -46,4 +47,16 @@ class Other {
         tags: tags,
         imagePath: imagePath ?? '');
   }
+
+  Map toJson() => {
+        'id': id,
+        'name': name,
+        'summary': summary,
+        'tags': jsonEncode(tags),
+        'imagePath': jsonEncode(imagePath),
+        'appearance': appearance.toJson(),
+        'milestones': milestones != null
+            ? milestones.map((i) => i.toJson()).toList()
+            : null,
+      };
 }

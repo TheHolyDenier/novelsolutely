@@ -35,4 +35,13 @@ extension ParseToString on Ownership {
         return Strings.unknown;
     }
   }
+
+  Ownership deserialize (String str) {
+    for (Ownership element in Ownership.values) {
+      if (element.toString() == str) {
+        return element;
+      }
+    }
+    return null;
+  }
 }

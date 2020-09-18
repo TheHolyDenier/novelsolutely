@@ -30,4 +30,12 @@ class Owned {
       @required this.ownership,
       this.obtained,
       this.lost});
+
+  Map toJson() => {
+        'id': id,
+        'name': name,
+        'ownership': '$ownership',
+        'obtained': obtained,
+        'lost': lost
+      };
 }

@@ -20,4 +20,12 @@ class Category {
   Category({@required this.id, @required this.title, this.milestones}) {
     if (milestones == null) milestones = [];
   }
+
+  Map toJson() => {
+        'id': id,
+        'title': title,
+        'milestones': milestones != null
+            ? milestones.map((i) => i.toJson()).toList()
+            : null,
+      };
 }

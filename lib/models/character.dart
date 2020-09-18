@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
@@ -41,17 +42,16 @@ class Character {
   @HiveField(9)
   List<Category> milestones;
 
-  Character(
-      {@required this.id,
-      @required this.name,
-      @required this.summary,
-      @required this.tags,
-      this.imagePath,
-      List<Milestone> appearance,
-      List<Milestone> personality,
-      this.birthDate,
-      this.relationship,
-      this.milestones}) {
+  Character({@required this.id,
+    @required this.name,
+    @required this.summary,
+    @required this.tags,
+    this.imagePath,
+    List<Milestone> appearance,
+    List<Milestone> personality,
+    this.birthDate,
+    this.relationship,
+    this.milestones}) {
     this.appearance = Category(
         id: Uuid().v1(),
         title: Strings.appearance,
@@ -75,4 +75,22 @@ class Character {
         tags: tags,
         imagePath: imagePath ?? '');
   }
+
+  Map toJson() =>
+      {
+        'id': id,
+        'name': name,
+        'summary': summary,
+        'tags': jsonEncode(tags),
+        'imagePath': jsonEncode(imagePath),
+        'appearance': appearance.toJson(),
+        'personality': personality.toJson(),
+        'birthDate': birthDate,
+        'relationship': relationship != null
+            ? relationship.map((i) => i.toJson()).toList()
+            : null,
+        'milestones': milestones != null
+            ? milestones.map((i) => i.toJson()).toList()
+            : null,
+      };
 }

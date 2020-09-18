@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
@@ -6,11 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
+import './category.dart';
+import './generic.dart';
+
 //MODELS
 import './milestone.dart';
-import './category.dart';
 import './owned.dart';
-import './generic.dart';
 
 //UTILS
 import '../utils/strings.dart';
@@ -62,4 +64,19 @@ class Item {
         tags: tags,
         imagePath: imagePath ?? '');
   }
+
+  Map toJson() => {
+        'id': id,
+        'name': name,
+        'summary': summary,
+        'tags': jsonEncode(tags),
+        'imagePath': jsonEncode(imagePath),
+        'appearance': appearance.toJson(),
+        'creationDate': creationDate,
+        'owners':
+            owners != null ? owners.map((i) => i.toJson()).toList() : null,
+        'milestones': milestones != null
+            ? milestones.map((i) => i.toJson()).toList()
+            : null,
+      };
 }

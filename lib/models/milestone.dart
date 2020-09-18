@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 //LIBRARIES
 import 'package:hive/hive.dart';
 
@@ -16,4 +17,10 @@ class Milestone {
   String description;
 
   Milestone({this.id, this.date, @required this.description});
+
+  Map toJson() => {
+        'id': id,
+        'date': date,
+        'description': description,
+      };
 }

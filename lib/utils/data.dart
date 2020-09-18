@@ -4,7 +4,11 @@ import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/dictionary.dart';
+import '../models/enum/ownership.dart';
 import '../models/generic.dart';
+import '../models/owned.dart';
+import '../models/owned.dart';
+import '../models/owned.dart';
 import '../screens/dialogs/dictionary_input_dialog.dart';
 
 //UTILS
@@ -76,4 +80,6 @@ class Data {
     });
     return generics;
   }
+
+
 }

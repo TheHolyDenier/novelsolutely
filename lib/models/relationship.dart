@@ -27,4 +27,11 @@ class Relationship {
       @required this.name,
       this.idName,
       @required this.kinship});
+
+  Map toJson() => {
+        'id': id,
+        'name': name,
+        'idName': idName,
+        'kinship': '$kinship',
+      };
 }

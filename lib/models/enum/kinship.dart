@@ -83,4 +83,13 @@ extension ParseToString on Kinship {
         return Strings.enemy;
     }
   }
+
+  Kinship deserialize(String str) {
+    for (Kinship element in Kinship.values) {
+      if (element.toString() == str) {
+        return element;
+      }
+    }
+    return null;
+  }
 }

@@ -42,4 +42,18 @@ class Dictionary extends HiveObject {
       this.places,
       this.items,
       this.others});
+
+  Map toJson() => {
+        'id': id,
+        'name': name,
+        'imagePath': imagePath,
+        'characters': characters != null
+            ? characters.map((i) => i.toJson()).toList()
+            : null,
+        'places':
+            places != null ? places.map((i) => i.toJson()).toList() : null,
+        'items': items != null ? items.map((i) => i.toJson()).toList() : null,
+        'others':
+            others != null ? others.map((i) => i.toJson()).toList() : null,
+      };
 }
