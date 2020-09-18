@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
-//MODELS
 import '../models/dictionary.dart';
-
-//WIDGETS
+import '../models/generic.dart';
 import '../screens/dialogs/dictionary_input_dialog.dart';
 
 //UTILS
 import '../utils/routes.dart';
 import 'dialog_anim.dart';
+import 'routes.dart';
+import 'strings.dart';
 
 class Data {
   static Box _box;
@@ -51,4 +51,29 @@ class Data {
       (Data.box.get(idDictionary) as Dictionary)
           .characters
           .removeWhere((element) => element.id == idCharacter);
+
+  static List<Generic> listToGeneric(String id, String type) {
+    List<Generic> generics;
+    switch (type) {
+      case Strings.characters:
+        generics = _charactersToGeneric(id);
+        break;
+      case Strings.places:
+        break;
+      case Strings.objects:
+        break;
+      default:
+        break;
+    }
+
+    return generics;
+  }
+
+  static List<Generic> _charactersToGeneric(String id) {
+    List<Generic> generics = [];
+    (_box.get(id) as Dictionary).characters.forEach((character) {
+      generics.add(character.toGeneric());
+    });
+    return generics;
+  }
 }

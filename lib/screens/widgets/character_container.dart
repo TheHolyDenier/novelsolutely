@@ -5,8 +5,8 @@ import './tag_widget.dart';
 
 //MODELS
 import '../../models/character.dart';
-import '../../models/dictionary.dart';
 import '../../models/enum/novel_event_type.dart';
+import '../../models/generic.dart';
 import '../../models/path_id.dart';
 import '../../utils/colors.dart';
 
@@ -19,38 +19,42 @@ import '../dialogs/delete_dialog.dart';
 
 typedef GenericContainerCallback = void Function(NovelEventType novelEventType);
 
-class CharacterContainerWidget extends StatefulWidget {
+class GenericContainerWidget extends StatefulWidget {
   final String id;
+  final String type;
   final key;
   final GenericContainerCallback callback;
 
-  CharacterContainerWidget(this.id,
-      {@required this.key, @required this.callback});
+  GenericContainerWidget(this.id,
+      {@required this.key, @required this.callback, @required this.type});
 
   @override
-  CharacterContainerWidgetState createState() =>
-      CharacterContainerWidgetState(id, key: key, callback: callback);
+  GenericContainerWidgetState createState() => GenericContainerWidgetState(id,
+      key: key, callback: callback, typeElement: type);
 }
 
-class CharacterContainerWidgetState extends State<CharacterContainerWidget> {
-  List<Character> _characters;
-  List<Character> _filtered;
+class GenericContainerWidgetState extends State<GenericContainerWidget> {
+  List<Generic> _elements;
+  List<Generic> _filtered;
   List<String> _tags = [];
   List<String> _selected = [];
+  final String typeElement;
   final String _idDictionary;
   final Key key;
   final GenericContainerCallback callback;
 
-  CharacterContainerWidgetState(this._idDictionary, {this.key, this.callback});
+  GenericContainerWidgetState(this._idDictionary,
+      {this.key, this.callback, this.typeElement});
 
   void _filter({bool force = false}) {
-    _characters = (Data.box.get(_idDictionary) as Dictionary).characters;
-    print('tmp personajes total: ${_characters.length}');
-    if ((_characters != null && _characters.length > 0) || force) {
-      _characters.sort((a, b) => a.name.compareTo(b.name));
-      _filtered = List.from(_characters);
+    // _elements = (Data.box.get(_idDictionary) as Dictionary).characters;
+    _elements = Data.listToGeneric(_idDictionary, typeElement);
+    print('tmp personajes total: ${_elements.length}');
+    if ((_elements != null && _elements.length > 0) || force) {
+      _elements.sort((a, b) => a.name.compareTo(b.name));
+      _filtered = List.from(_elements);
       Map<String, int> tagMap = Map();
-      _characters.forEach((character) {
+      _elements.forEach((character) {
         character.tags.forEach((tag) {
           if (tagMap.containsKey(tag)) {
             tagMap[tag]++;
@@ -74,27 +78,27 @@ class CharacterContainerWidgetState extends State<CharacterContainerWidget> {
   @override
   Widget build(BuildContext context) {
     _filter();
-    return _characters != null
+    return _elements != null
         ? Column(
             children: [
               if (_tags.isNotEmpty)
-              TagWidget(_tags, callback: (selected) {
-                _filtered = List.from(_characters
-                    .where((character) =>
-                        selected.any((tag) => character.tags.contains(tag)))
-                    .toList());
-                setState(() {});
-              }),
+                TagWidget(_tags, callback: (selected) {
+                  _filtered = List.from(_elements
+                      .where((character) =>
+                          selected.any((tag) => character.tags.contains(tag)))
+                      .toList());
+                  setState(() {});
+                }),
               Expanded(
                 child: _filtered != null
                     ? ListView.builder(
                         itemCount: _filtered.length,
                         itemBuilder: (context, index) {
-                          Character character = _filtered[index];
+                          Generic element = _filtered[index];
                           return Column(
                             children: [
                               if (index == 0 ||
-                                  character.name[0] !=
+                                  element.name[0] !=
                                       _filtered[index - 1].name[0])
                                 Column(
                                   children: [
@@ -102,7 +106,7 @@ class CharacterContainerWidgetState extends State<CharacterContainerWidget> {
                                       Container(
                                         height: 20,
                                       ),
-                                    Text(character.name[0],
+                                    Text(element.name[0],
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline3),
@@ -117,39 +121,39 @@ class CharacterContainerWidgetState extends State<CharacterContainerWidget> {
                                       Expanded(
                                         child: ListTile(
                                           leading: Hero(
-                                            tag: character.name,
+                                            tag: element.name,
                                             child: Container(
                                               width: 50,
                                               height: 50,
                                               child: ClipOval(
                                                 child: ImageWidget(
-                                                    url: character.imagePath !=
+                                                    url: element.imagePath !=
                                                                 null &&
-                                                            character.imagePath
+                                                            element.imagePath
                                                                     .length >
                                                                 0
-                                                        ? character.imagePath[0]
+                                                        ? element.imagePath[0]
                                                         : ''),
                                               ),
                                             ),
                                           ),
-                                          title: Text(character.name),
+                                          title: Text(element.name),
                                           subtitle: Text(
-                                            character.summary,
+                                            element.summary,
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           trailing:
                                               Icon(Icons.keyboard_arrow_right),
-                                          onTap: () => _onTapItem(character),
+                                          onTap: () => _onTapItem(element),
                                           onLongPress: () =>
-                                              _selectDeselect(character),
+                                              _selectDeselect(element),
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                color: _selected.contains(character.id)
+                                color: _selected.contains(element.id)
                                     ? Palette.purple
                                     : null,
                               )
@@ -164,29 +168,29 @@ class CharacterContainerWidgetState extends State<CharacterContainerWidget> {
         : Container();
   }
 
-  void _onTapItem(Character character) {
+  void _onTapItem(Generic element) {
     if (_selected.isEmpty) {
       Navigator.pushNamed(context, CharacterScreen.route,
           arguments:
-              PathId(dictionaryId: _idDictionary, elementId: character.id));
+              PathId(dictionaryId: _idDictionary, elementId: element.id));
     } else
-      _selectDeselect(character);
+      _selectDeselect(element);
   }
 
-  void _selectDeselect(Character character) {
+  void _selectDeselect(Generic element) {
     print('tmp selected: ${_selected.length}');
-    print('tmp selected: ${character.name}');
-    print('tmp selected: ${_selected.contains(character.id)}');
-    if (_selected.contains(character.id)) {
+    print('tmp selected: ${element.name}');
+    print('tmp selected: ${_selected.contains(element.id)}');
+    if (_selected.contains(element.id)) {
       setState(() {
-        _selected.remove(character.id);
+        _selected.remove(element.id);
       });
     } else {
       setState(() {
-        _selected.add(character.id);
+        _selected.add(element.id);
       });
     }
-    print('tmp selected: ${_selected.contains(character.id)}');
+    print('tmp selected: ${_selected.contains(element.id)}');
 
     callback(_selected.isEmpty
         ? NovelEventType.NO_CHAR_SELECTED
@@ -225,7 +229,7 @@ class CharacterContainerWidgetState extends State<CharacterContainerWidget> {
       setState(() {
         _filter(force: true);
       });
-      if (_characters.isEmpty) callback(NovelEventType.NO_CHAR_SELECTED);
+      if (_elements.isEmpty) callback(NovelEventType.NO_CHAR_SELECTED);
     }
   }
 }

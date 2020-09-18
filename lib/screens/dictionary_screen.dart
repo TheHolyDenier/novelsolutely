@@ -15,6 +15,7 @@ import '../utils/colors.dart';
 import '../utils/data.dart';
 import '../utils/dimens.dart';
 import '../utils/routes.dart';
+import '../utils/strings.dart';
 
 //TODO: add milestones
 //TODO: add new categories
@@ -32,7 +33,7 @@ class DictionaryScreen extends StatefulWidget {
 
 class _DictionaryScreenState extends State<DictionaryScreen> {
   int _index = 0;
-  GlobalKey<CharacterContainerWidgetState> _childKey = GlobalKey();
+  GlobalKey<GenericContainerWidgetState> _childKey = GlobalKey();
   bool _selecting = false;
 
   @override
@@ -81,11 +82,12 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
         child: IndexedStack(
           index: _index,
           children: [
-            CharacterContainerWidget(
+            GenericContainerWidget(
               dictionary.id,
               key: _childKey,
               callback: (NovelEventType novelEventType) =>
                   _receiveEvent(novelEventType),
+              type: Strings.characters,
             ),
             Container(),
             Container(),
