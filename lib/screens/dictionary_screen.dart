@@ -22,6 +22,9 @@ import '../utils/routes.dart';
 //TODO: export database to JSON
 //TODO: quick add elements
 //TODO: search by name/summary
+//TODO: do not exit of selection mode after delete all selected elements
+//TODO: not always put the '?' when name nor surname is unprovided
+//TODO: still doesn't pop up characters
 
 class DictionaryScreen extends StatefulWidget {
   static const route = "/characters";
@@ -111,7 +114,6 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
             children: [
               for (var i = 0; i < Routes.navigation.length; i++)
                 Container(
-                  width: 80.0,
                   child: InkWell(
                     onTap: () {
                       setState(() {

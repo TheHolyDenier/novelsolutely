@@ -7,6 +7,8 @@ import 'package:uuid/uuid.dart';
 import '../models/character.dart';
 
 //MODELS
+import '../models/character_name.dart';
+import '../models/character_name.dart';
 import '../models/dictionary.dart';
 
 //WIDGETS
@@ -281,14 +283,18 @@ class _NewElementScreenState extends State<NewElementScreen> {
   }
 
   void _saveCharacter() {
-    var name = '${_surnameController.text.trim()},';
-    if (_nameController.text.trim().isNotEmpty)
-      name += ' ${_nameController.text.trim()}';
-    if (_nicknameController.text.trim().isNotEmpty)
-      name += ' «${_nicknameController.text.trim()}»';
+    CharacterName name = CharacterName.fromInputs(
+        name: _nameController.text.trim(),
+        surname: _surnameController.text.trim(),
+        nickname: _nicknameController.text.trim());
+    // var name = '${_surnameController.text.trim()},';
+    // if (_nameController.text.trim().isNotEmpty)
+    //   name += ' ${_nameController.text.trim()}';
+    // if (_nicknameController.text.trim().isNotEmpty)
+    //   name += ' «${_nicknameController.text.trim()}»';
     Character character = Character(
       id: Uuid().v1(),
-      name: name,
+      name: name.registerName(),
       tags: _tags != null && _tags.length > 0 ? _tags : [Strings.no_filter],
       summary: _summaryController.text.trim(),
       imagePath: [_imageController.text.trim()],

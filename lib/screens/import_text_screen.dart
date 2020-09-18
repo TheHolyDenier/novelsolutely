@@ -33,6 +33,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
   List<bool> _selected;
   double _width = 0;
   int _value = 0;
+  File _file;
 
   String id;
 
@@ -81,13 +82,29 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
               SizedBox(
                 height: Dimens.small_vertical_margin,
               ),
-              TextField(
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                maxLength: 900,
-                controller: _importController,
-                onChanged: (value) {},
-              ),
+              _file == null
+                  ? TextField(
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      maxLength: 900,
+                      controller: _importController,
+                      onChanged: (value) {},
+                    )
+                  : ListTile(
+                      title: Text(
+                        _file.path,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _file = null;
+                          });
+                        },
+                        icon: Icon(Icons.remove),
+                      ),
+                    ),
               SizedBox(
                 height: Dimens.small_vertical_margin,
               ),
@@ -104,7 +121,9 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
                     ),
                   ),
                   RaisedButton(
-                    onPressed: () => _saveToFile(_importController.text.trim()),
+                    onPressed: () => _file == null
+                        ? _saveToFile(_importController.text.trim())
+                        : _readFileLineByLine(_file),
                     child: Wrap(
                       children: [
                         Icon(Icons.file_upload),
@@ -155,6 +174,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
 
   Widget _setSettings() {
     return ExpansionTile(
+      initiallyExpanded: true,
       title: Text(
         Strings.chose_settings,
         textAlign: TextAlign.center,
@@ -268,7 +288,8 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
         if (i % 2 == 0) {
           if (_selected[0]) {
             Generic generic = _genericIsCharacter(name, line);
-            if (Data.elementExistsByName(
+            if (dictionary.characters == null) dictionary.characters = [];
+            if (!Data.elementExistsByName(
                 dictionary.id, Strings.characters, generic.name)) {
               dictionary.characters.add(generic.toCharacter());
             }
@@ -284,7 +305,10 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
       }
     }, onDone: () {
       dictionary.save();
-      _importController.text = '';
+      setState(() {
+        _importController.text = '';
+        _file = null;
+      });
     }, onError: (e) {
       print(e.toString());
     });
@@ -325,8 +349,9 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
       allowedExtensions: ['txt', 'md'],
     );
     if (result != null) {
-      File file = File(result.files.single.path);
-      _readFileLineByLine(file);
+      setState(() {
+        _file = File(result.files.single.path);
+      });
     }
   }
 }

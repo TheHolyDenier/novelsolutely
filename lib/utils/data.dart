@@ -49,15 +49,19 @@ class Data {
   static void delete(String id) => Data.box.delete(id);
 
   static void deleteCharacter(String idDictionary, String idCharacter) =>
-      (Data.box.get(idDictionary) as Dictionary)
+      getDictionary(idDictionary)
           .characters
           .removeWhere((element) => element.id == idCharacter);
+
+  static Dictionary getDictionary(String id) => Data.box.get(id);
 
   static List<Generic> listToGeneric(String id, String type) {
     List<Generic> generics = [];
     switch (type) {
       case Strings.characters:
-        generics = _charactersToGeneric(id);
+        if (getDictionary(id).characters != null &&
+            getDictionary(id).characters.length > 0)
+          generics = _charactersToGeneric(id);
         break;
       case Strings.places:
         break;
@@ -84,8 +88,9 @@ class Data {
     Dictionary d = _box.get(idDictionary);
     switch (type) {
       case Strings.characters:
-        found =
-            d.characters.firstWhere((element) => element.name == name) == null;
+        if (d.characters != null)
+          found =
+              d.characters.indexWhere((element) => element.name == name) != -1;
         break;
       case Strings.places:
         break;
