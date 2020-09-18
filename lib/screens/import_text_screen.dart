@@ -2,18 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
 //LIBRARIES
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/character_name.dart';
 import '../models/dictionary.dart';
-
 //MODELS
 import '../models/generic.dart';
 import '../utils/data.dart';
-
 //UTILS
 import '../utils/dimens.dart';
 import '../utils/routes.dart';
@@ -269,7 +266,10 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
         if (i % 2 == 0) {
           if (_selected[0]) {
             Generic generic = _genericIsCharacter(name, line);
-            dictionary.characters.add(generic.toCharacter());
+            if (Data.elementExistsByName(
+                dictionary.id, Strings.characters, generic.name)) {
+              dictionary.characters.add(generic.toCharacter());
+            }
           } else {
             Generic generic = _getGeneric(name, line);
             //  TODO: save the others
@@ -291,7 +291,6 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
   void _setByCharacter(String line, Dictionary dictionary) {
     //  TODO
   }
-
 
   Generic _genericIsCharacter(String completeName, String summary) {
     CharacterName characterName = CharacterName(completeName,

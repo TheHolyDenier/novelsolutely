@@ -2,16 +2,17 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
-//MODELS
-import '../models/dictionary.dart';
-import '../models/generic.dart';
-//VIEWS
-import '../screens/dialogs/dictionary_input_dialog.dart';
+
+import './dialog_anim.dart';
 
 //UTILS
 import './routes.dart';
-import './dialog_anim.dart';
 import './strings.dart';
+import '../models/dictionary.dart';
+import '../models/generic.dart';
+
+//VIEWS
+import '../screens/dialogs/dictionary_input_dialog.dart';
 
 class Data {
   static Box _box;
@@ -77,5 +78,22 @@ class Data {
     return generics;
   }
 
-
+  static bool elementExistsByName(
+      String idDictionary, String type, String name) {
+    bool found = false;
+    Dictionary d = _box.get(idDictionary);
+    switch (type) {
+      case Strings.characters:
+        found =
+            d.characters.firstWhere((element) => element.name == name) == null;
+        break;
+      case Strings.places:
+        break;
+      case Strings.objects:
+        break;
+      default:
+        break;
+    }
+    return found;
+  }
 }
