@@ -1,16 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+
 //LIBRARIES
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/character_name.dart';
 import '../models/dictionary.dart';
+
 //MODELS
 import '../models/generic.dart';
 import '../utils/data.dart';
+
 //UTILS
 import '../utils/dimens.dart';
 import '../utils/routes.dart';
@@ -91,9 +95,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   RaisedButton(
-                    onPressed: () {
-                      //  TODO: search file
-                    },
+                    onPressed: _searchFile,
                     child: Wrap(
                       children: [
                         Icon(Icons.attach_file),
@@ -241,7 +243,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
 
     // Write the file.
     file.writeAsString('$value');
-    _readLine(file);
+    _readFileLineByLine(file);
   }
 
   Future<String> get _localPath async {
@@ -250,7 +252,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
     return directory.path;
   }
 
-  void _readLine(File file) {
+  void _readFileLineByLine(File file) {
     Stream<List<int>> inputStream = file.openRead();
     Dictionary dictionary = Data.box.get(id);
     String name;
@@ -315,5 +317,16 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
   Future<File> get _localFile async {
     final path = await _localPath;
     return File('$path/counter.txt');
+  }
+
+  void _searchFile() async {
+    FilePickerResult result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['txt', 'md'],
+    );
+    if (result != null) {
+      File file = File(result.files.single.path);
+      _readFileLineByLine(file);
+    }
   }
 }
