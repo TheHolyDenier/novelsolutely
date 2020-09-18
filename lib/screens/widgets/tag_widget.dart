@@ -3,25 +3,25 @@ import 'package:flutter/material.dart';
 //UTILS
 import '../../utils/strings.dart';
 
-typedef SelectCallback = void Function(List<String> selected);
+typedef TagCallback = void Function(List<String> selected);
 
 class TagWidget extends StatefulWidget {
 
   final List<String> _tags;
-  final SelectCallback setFilters;
+  final TagCallback callback;
 
-  TagWidget(this._tags, {this.setFilters});
+  TagWidget(this._tags, {this.callback});
 
   @override
   _TagWidgetState createState() =>
-      _TagWidgetState(this._tags, setFilters: this.setFilters);
+      _TagWidgetState(this._tags, callback: this.callback);
 }
 
 class _TagWidgetState extends State<TagWidget> {
   List<String> _tags, _selected;
-  SelectCallback setFilters;
+  TagCallback callback;
 
-  _TagWidgetState(this._tags, {this.setFilters});
+  _TagWidgetState(this._tags, {this.callback});
 
 
   @override
@@ -76,7 +76,7 @@ class _TagWidgetState extends State<TagWidget> {
                   } else {
                     _selected.add(tag);
                   }
-                  setFilters(_selected);
+                  callback(_selected);
                 });
               },
               label: Text(tag),
@@ -92,7 +92,7 @@ class _TagWidgetState extends State<TagWidget> {
     } else {
       _selected.length = 0;
     }
-    setFilters(_selected);
+    callback(_selected);
     setState(() {});
   }
 }

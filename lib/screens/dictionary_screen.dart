@@ -86,7 +86,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
             CharacterContainerWidget(
               dictionary.id,
               key: _childKey,
-              selectCallback: (NovelEventType novelEventType) =>
+              callback: (NovelEventType novelEventType) =>
                   _receiveEvent(novelEventType),
             ),
             Container(),

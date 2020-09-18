@@ -82,7 +82,6 @@ class _ImagesInputDialogState extends State<ImagesInputDialog> {
       if (controller.text.trim().isNotEmpty && isURL(controller.text.trim()))
         images.add(controller.text.trim());
     }
-    print('tmp envía $images');
     Navigator.pop(context, images);
   }
 }

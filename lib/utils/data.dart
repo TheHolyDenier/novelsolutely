@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
-//WIDGETS
-import '../screens/dialogs/dictionary_input_dialog.dart';
-
 //MODELS
 import '../models/dictionary.dart';
+
+//WIDGETS
+import '../screens/dialogs/dictionary_input_dialog.dart';
 
 //UTILS
 import '../utils/routes.dart';
@@ -46,4 +46,9 @@ class Data {
           .then((value) => _addDictionary(value[0], image: value[1]));
 
   static void delete(String id) => Data.box.delete(id);
+
+  static void deleteCharacter(String idDictionary, String idCharacter) =>
+      (Data.box.get(idDictionary) as Dictionary)
+          .characters
+          .removeWhere((element) => element.id == idCharacter);
 }

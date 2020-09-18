@@ -53,6 +53,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
     id = ModalRoute.of(context).settings.arguments;
     _width = MediaQuery.of(context).size.width;
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(Strings.import_from_text),
       ),
@@ -212,7 +213,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
                 Container(
                   width: 24.0,
                   child: TextFormField(
-                    controller: _startCharController..text = '«',
+                    controller: _startCharController,
                     textAlign: TextAlign.center,
                     onChanged: (value) {
                       setState(() {});
@@ -223,7 +224,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
                 Container(
                   width: 24.0,
                   child: TextFormField(
-                    controller: _endCharController..text = '»',
+                    controller: _endCharController,
                     textAlign: TextAlign.center,
                     onChanged: (value) {
                       setState(() {});
@@ -266,8 +267,19 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
         .listen((String line) {
       // Process results.
       i++;
+
       if (_value == 0) {
-        _setByParagraph(i, name, line, dictionary);
+        if (i % 2 == 0) {
+          if (_selected[0]) {
+            Generic generic = _genericIsCharacter(name, line);
+            dictionary.characters.add(generic.toCharacter());
+          } else {
+            Generic generic = _getGeneric(name, line);
+            //  TODO: save the others
+          }
+        } else {
+          name = line.trim();
+        }
       } else {
         _setByCharacter(line, dictionary);
       }
@@ -280,27 +292,17 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
   }
 
   void _setByCharacter(String line, Dictionary dictionary) {
-  //  TODO
+    //  TODO
   }
 
   void _setByParagraph(int i, String name, String line, Dictionary dictionary) {
-    if (i % 2 == 0) {
-      if (_selected[0]) {
-        Generic generic = _genericIsCharacter(name, line);
-        dictionary.characters.add(generic.toCharacter());
-      } else {
-        Generic generic = _getGeneric(name, line);
-        //  TODO: save the others
-      }
-    } else {
-      name = line.trim();
-    }
+
   }
 
   Generic _genericIsCharacter(String completeName, String summary) {
     CharacterName characterName = CharacterName(completeName,
-        startChar: _startCharController.text.trim(),
-        endChar: _endCharController.text.trim());
+        startChar: _startCharController.text.trim() ?? '«',
+        endChar: _endCharController.text.trim() ?? '»');
 
     return _getGeneric(characterName.toString(), summary);
   }
