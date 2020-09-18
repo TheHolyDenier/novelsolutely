@@ -22,7 +22,6 @@ import '../utils/routes.dart';
 //TODO: export database to JSON
 //TODO: quick add elements
 //TODO: search by name/summary
-//TODO: do not exit of selection mode after delete all selected elements
 //TODO: not always put the '?' when name nor surname is unprovided
 //TODO: still doesn't pop up characters
 

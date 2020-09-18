@@ -225,7 +225,7 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
       setState(() {
         _filter(force: true);
       });
-      if (_elements.isEmpty) callback(NovelEventType.NO_CHAR_SELECTED);
+      callback(NovelEventType.NO_CHAR_SELECTED);
     }
   }
 }
