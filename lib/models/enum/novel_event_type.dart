@@ -1,0 +1,6 @@
+enum NovelEventType {
+  CHAR_SELECTED,
+  NO_CHAR_SELECTED,
+  REMOVE_ALL_CHAR,
+  DESELECT_ALL_CHAR
+}

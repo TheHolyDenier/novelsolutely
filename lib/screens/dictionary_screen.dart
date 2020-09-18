@@ -1,17 +1,19 @@
-
 import 'package:flutter/material.dart';
+
+import './new_element_screen.dart';
 
 //WIDGETS
 import './widgets/character_container.dart';
 import './widgets/drawer_widget.dart';
-import './new_element_screen.dart';
 
 //MODELS
 import '../models/dictionary.dart';
+import '../models/enum/novel_event_type.dart';
+
 //UTILS
 import '../utils/colors.dart';
-import '../utils/dimens.dart';
 import '../utils/data.dart';
+import '../utils/dimens.dart';
 import '../utils/routes.dart';
 
 //TODO: fix screen not reloading when new characters are added!!
@@ -32,6 +34,8 @@ class DictionaryScreen extends StatefulWidget {
 
 class _DictionaryScreenState extends State<DictionaryScreen> {
   int _index = 0;
+  GlobalKey<CharacterContainerWidgetState> _childKey = GlobalKey();
+  bool _selecting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,20 +43,35 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
     Dictionary dictionary = Data.box.get(id);
     return Scaffold(
       appBar: AppBar(
+        leading: _selecting
+            ? IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () => _childKey.currentState
+                    .parentComm(NovelEventType.DESELECT_ALL_CHAR),
+              )
+            : null,
         title: Text(dictionary.name),
         actions: [
-          IconButton(
-            icon: Icon(
-              dictionary.favorite ? Icons.star : Icons.star_border_outlined,
-              color: dictionary.favorite ? Colors.amber : Palette.black,
-            ),
-            onPressed: () {
-              setState(() {
-                dictionary.favorite = !dictionary.favorite;
-                dictionary.save();
-              });
-            },
-          ),
+          _selecting
+              ? IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () => _childKey.currentState
+                      .parentComm(NovelEventType.REMOVE_ALL_CHAR),
+                )
+              : IconButton(
+                  icon: Icon(
+                    dictionary.favorite
+                        ? Icons.star
+                        : Icons.star_border_outlined,
+                    color: dictionary.favorite ? Colors.amber : Palette.black,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      dictionary.favorite = !dictionary.favorite;
+                      dictionary.save();
+                    });
+                  },
+                ),
         ],
       ),
       drawer: DrawerWidget(dictionary),
@@ -64,7 +83,12 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
         child: IndexedStack(
           index: _index,
           children: [
-            CharacterContainerWidget(dictionary.id),
+            CharacterContainerWidget(
+              dictionary.id,
+              key: _childKey,
+              selectCallback: (NovelEventType novelEventType) =>
+                  _receiveEvent(novelEventType),
+            ),
             Container(),
             Container(),
             Container(),
@@ -120,5 +144,11 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
         elevation: 2.0,
       ),
     );
+  }
+
+  _receiveEvent(NovelEventType event) {
+    setState(() {
+      _selecting = event == NovelEventType.CHAR_SELECTED;
+    });
   }
 }
