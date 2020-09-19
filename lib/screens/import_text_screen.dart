@@ -20,8 +20,6 @@ import '../utils/dimens.dart';
 import '../utils/routes.dart';
 import '../utils/strings.dart';
 
-//TODO: check if not exists
-
 class ImportTextScreen extends StatefulWidget {
   static final route = '/import-text';
 
@@ -30,11 +28,13 @@ class ImportTextScreen extends StatefulWidget {
 }
 
 class _ImportTextScreenState extends State<ImportTextScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   List<bool> _selected;
   double _width = 0;
   int _value = 0;
   File _file;
-
+  int _total;
   String id;
 
   final _startCharController = TextEditingController();
@@ -55,6 +55,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
     id = ModalRoute.of(context).settings.arguments;
     _width = MediaQuery.of(context).size.width;
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(Strings.import_from_text),
       ),
@@ -71,6 +72,32 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _setSettings(),
+              SizedBox(
+                height: Dimens.small_vertical_margin,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  RaisedButton(
+                    onPressed: _searchFile,
+                    child: Wrap(
+                      children: [
+                        Icon(Icons.attach_file),
+                        Text(Strings.select_file.toUpperCase())
+                      ],
+                    ),
+                  ),
+                  RaisedButton(
+                    onPressed: _importElements,
+                    child: Wrap(
+                      children: [
+                        Icon(Icons.file_upload),
+                        Text(Strings.save.toUpperCase())
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(
                 height: Dimens.small_vertical_margin,
               ),
@@ -91,8 +118,9 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
                       onChanged: (value) {},
                     )
                   : ListTile(
+                      leading: Icon(Icons.attachment),
                       title: Text(
-                        _file.path,
+                        _file.path.split('/')[_file.path.split('/').length - 1],
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -105,34 +133,6 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
                         icon: Icon(Icons.remove),
                       ),
                     ),
-              SizedBox(
-                height: Dimens.small_vertical_margin,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  RaisedButton(
-                    onPressed: _searchFile,
-                    child: Wrap(
-                      children: [
-                        Icon(Icons.attach_file),
-                        Text(Strings.select_file.toUpperCase())
-                      ],
-                    ),
-                  ),
-                  RaisedButton(
-                    onPressed: () => _file == null
-                        ? _saveToFile(_importController.text.trim())
-                        : _readFileLineByLine(_file),
-                    child: Wrap(
-                      children: [
-                        Icon(Icons.file_upload),
-                        Text(Strings.save.toUpperCase())
-                      ],
-                    ),
-                  ),
-                ],
-              ),
               SizedBox(
                 height: Dimens.small_vertical_margin,
               ),
@@ -213,9 +213,17 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
               onChanged: (value) {
                 setState(() {});
               },
+              decoration: InputDecoration(
+                errorText:
+                    _paragraphController.text.trim().isEmpty && _value == 1
+                        ? ''
+                        : null,
+              ),
             ),
           ),
         ),
+        if (_paragraphController.text.trim().isEmpty && _value == 1)
+          _setError(),
         if (_selected[0])
           ListTile(
             leading: IconButton(
@@ -234,23 +242,33 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
                     onChanged: (value) {
                       setState(() {});
                     },
+                    decoration: InputDecoration(
+                      errorText:
+                          _startCharController.text.trim().isEmpty ? '' : null,
+                    ),
                   ),
                 ),
                 Text(Strings.nickname),
                 Container(
                   width: 24.0,
                   child: TextFormField(
-                    controller: _endCharController,
-                    textAlign: TextAlign.center,
-                    onChanged: (value) {
-                      setState(() {});
-                    },
-                  ),
+                      controller: _endCharController,
+                      textAlign: TextAlign.center,
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                      decoration: InputDecoration(
+                        errorText:
+                            _endCharController.text.trim().isEmpty ? '' : null,
+                      )),
                 ),
               ],
             ),
             subtitle: Text(Strings.check_format),
           ),
+        if (_startCharController.text.trim().isEmpty ||
+            _endCharController.text.trim().isEmpty)
+          _setError(),
         SizedBox(
           height: Dimens.small_vertical_margin,
         ),
@@ -260,7 +278,6 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
 
   Future<void> _saveToFile(String value) async {
     final file = await _localFile;
-
     // Write the file.
     file.writeAsString('$value');
     _readFileLineByLine(file);
@@ -268,7 +285,6 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
-
     return directory.path;
   }
 
@@ -277,6 +293,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
     Dictionary dictionary = Data.box.get(id);
     String name;
     int i = 0;
+    _total = 0;
     inputStream
         .transform(utf8.decoder) // Decode bytes to UTF-8.
         .transform(new LineSplitter()) // Convert stream to individual lines.
@@ -292,10 +309,12 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
             if (!Data.elementExistsByName(
                 dictionary.id, Strings.characters, generic.name)) {
               dictionary.characters.add(generic.toCharacter());
+              _total++;
             }
           } else {
             Generic generic = _getGeneric(name, line);
             //  TODO: save the others
+            _total++;
           }
         } else {
           name = line.trim();
@@ -309,6 +328,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
         _importController.text = '';
         _file = null;
       });
+      _done();
     }, onError: (e) {
       print(e.toString());
     });
@@ -316,6 +336,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
 
   void _setByCharacter(String line, Dictionary dictionary) {
     //  TODO
+    _total++;
   }
 
   Generic _genericIsCharacter(String completeName, String summary) {
@@ -351,5 +372,34 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
         _file = File(result.files.single.path);
       });
     }
+  }
+
+  void _importElements() {
+    if (_startCharController.text.trim().isNotEmpty &&
+        _endCharController.text.trim().isNotEmpty &&
+        (_value == 0 || _paragraphController.text.trim().isNotEmpty)) {
+      if (_file == null) {
+        _saveToFile(_importController.text.trim());
+      } else {
+        _readFileLineByLine(_file);
+      }
+    }
+  }
+
+  Widget _setError() {
+    return Text(Strings.error_empty,
+        style: TextStyle(color: Theme.of(context).errorColor));
+  }
+
+  void _done() {
+    final snackBar = SnackBar(
+      behavior: SnackBarBehavior.floating,
+      content: Text('${Strings.import_done} $_total.'),
+      action: SnackBarAction(
+        label: Strings.X,
+        onPressed: () => _scaffoldKey.currentState.hideCurrentSnackBar(),
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

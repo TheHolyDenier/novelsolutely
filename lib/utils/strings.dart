@@ -102,6 +102,10 @@ class Strings {
 
   static const select_file = 'Buscar archivo';
 
+  static const import_done = 'Importación realizada, incluidos correctamente: ';
+
+  static const X = 'X';
+
   static bool containsCaseInsensitive(String s, List<String> l) {
     for (String string in l) {
       if (string.toLowerCase() == s.toLowerCase()) {
