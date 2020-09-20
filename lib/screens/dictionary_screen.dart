@@ -16,15 +16,14 @@ import '../utils/data.dart';
 import '../utils/dimens.dart';
 import '../utils/routes.dart';
 
-//TODO: add milestones
 //TODO: add new categories
-//TODO: add other elements
+//TODO: save categories
 //TODO: export database to JSON
 //TODO: quick add elements
 //TODO: search by name/summary
-//TODO: still doesn't pop up characters
-//TODO: tags doesn't update in dictionary page
-//TODO: filter tag's doesn't work
+//TODO: still doesn't pop up characters?? check
+//TODO: upgrade delete milestone method
+//TODO: delete categories
 
 class DictionaryScreen extends StatefulWidget {
   static const route = "/characters";
