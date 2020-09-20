@@ -3,25 +3,24 @@ import 'package:flutter/material.dart';
 //LIBRARIES
 import 'package:flutter_tags/flutter_tags.dart';
 
-import './dialogs/generic_input_dialog.dart';
-import './dialogs/images_input_dialog.dart';
-
 //SCREENS && WIDGETS
 import './widgets/header_widget.dart';
 import './widgets/milestone_widget.dart';
+import './dialogs/generic_input_dialog.dart';
+import './dialogs/images_input_dialog.dart';
 
 //MODELS
 import '../models/character.dart';
 import '../models/character_name.dart';
 import '../models/dictionary.dart';
 import '../models/path_id.dart';
+
+//UTILS
+import '../utils/strings.dart';
 import '../utils/colors.dart';
 import '../utils/data.dart';
 import '../utils/dialog_anim.dart';
 import '../utils/dimens.dart';
-
-//UTILS
-import '../utils/strings.dart';
 
 class CharacterScreen extends StatefulWidget {
   static const route = '/character';
@@ -39,34 +38,44 @@ class _CharacterScreenState extends State<CharacterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    PathId pathId = ModalRoute.of(context).settings.arguments;
+    PathId pathId = ModalRoute
+        .of(context)
+        .settings
+        .arguments;
     _setCharacter(pathId);
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery
+        .of(context)
+        .size;
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            _dictionary.save();
+            Navigator.pop(context);
+          },
           icon: Icon(Icons.keyboard_arrow_left),
         ),
         title: Text(CharacterName.readableName(_character.name)),
         actions: [
           IconButton(
             icon: Icon(Icons.edit_outlined),
-            onPressed: () => DialogAnimation.openDialog(
-              context,
-              GenericInputDialog(
-                _character.toGeneric(),
-                isCharacter: true,
-              ),
-            ),
+            onPressed: () =>
+                DialogAnimation.openDialog(
+                  context,
+                  GenericInputDialog(
+                    _character.toGeneric(),
+                    isCharacter: true,
+                  ),
+                ),
           ),
           IconButton(
             icon: Icon(Icons.add_a_photo_outlined),
-            onPressed: () => DialogAnimation.openDialog(
-              context,
-              ImagesInputDialog(_character.toGeneric()),
-            ).then((value) => _saveImages(value)),
+            onPressed: () =>
+                DialogAnimation.openDialog(
+                  context,
+                  ImagesInputDialog(_character.toGeneric()),
+                ).then((value) => _saveImages(value)),
           ),
         ],
       ),

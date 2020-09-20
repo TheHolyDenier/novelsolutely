@@ -48,37 +48,19 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
   GenericContainerWidgetState(this._idDictionary,
       {this.key, this.callback, this.typeElement});
 
-  void _filter({bool force = false}) {
-    _elements = Data.listToGeneric(_idDictionary, typeElement);
-    if ((_elements != null && _elements.length > 0) || force) {
+  void _setCharacterList({bool force = false}) {
+    if ((_elements == null || _elements.isEmpty) || force) {
+      _elements = Data.listToGeneric(_idDictionary, typeElement);
       _elements.sort((a, b) => a.name.compareTo(b.name));
       _filtered = List.from(_elements);
-      Map<String, int> tagMap = Map();
-      _elements.forEach((character) {
-        character.tags.forEach((tag) {
-          if (tagMap.containsKey(tag)) {
-            tagMap[tag]++;
-          } else {
-            tagMap[tag] = 1;
-          }
-        });
-      });
-
-      var _tagsSorted = tagMap.entries.toList()
-        ..sort((a, b) {
-          var diff = b.value.compareTo(a.value);
-          if (diff == 0) diff = a.key.compareTo(b.key);
-          return diff;
-        });
-      _tags = [];
-      _tagsSorted.forEach((key) => _tags.add(key.key));
+      print('tmp _setCharacterList');
+      _setUpdatedTags();
     }
-    if (force) _tagKey.currentState.updateTags(_tags);
   }
 
   @override
   Widget build(BuildContext context) {
-    _filter();
+    _setCharacterList();
     return _elements != null
         ? Column(
             children: [
@@ -171,7 +153,8 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
               arguments:
                   PathId(dictionaryId: _idDictionary, elementId: element.id))
           .then((value) {
-        _filter(force: true);
+        _tagKey.currentState.updateTags(_tags);
+        _setUpdatedTags();
         setState(() {});
       });
     } else
@@ -224,18 +207,44 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
       });
       Data.box.get(_idDictionary).save();
       setState(() {
-        _filter(force: true);
+        _setCharacterList(force: true);
       });
       callback(NovelEventType.NO_CHAR_SELECTED);
     }
   }
 
   void _updateSelected(List<String> selected) {
+    print('tmp $selected');
+    print('tmp ${_filtered.length}');
     setState(() {
       _filtered = List.from(_elements
           .where((character) =>
               selected.any((tag) => character.tags.contains(tag)))
           .toList());
     });
+    print('tmp ${_filtered.length}');
+  }
+
+  void _setUpdatedTags() {
+    print('tmp _setUpdatedTags');
+    Map<String, int> tagMap = Map();
+    _elements.forEach((character) {
+      character.tags.forEach((tag) {
+        if (tagMap.containsKey(tag)) {
+          tagMap[tag]++;
+        } else {
+          tagMap[tag] = 1;
+        }
+      });
+    });
+
+    var _tagsSorted = tagMap.entries.toList()
+      ..sort((a, b) {
+        var diff = b.value.compareTo(a.value);
+        if (diff == 0) diff = a.key.compareTo(b.key);
+        return diff;
+      });
+    _tags = [];
+    _tagsSorted.forEach((key) => _tags.add(key.key));
   }
 }
