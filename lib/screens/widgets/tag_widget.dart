@@ -6,23 +6,23 @@ import '../../utils/strings.dart';
 typedef TagCallback = void Function(List<String> selected);
 
 class TagWidget extends StatefulWidget {
-
   final List<String> _tags;
   final TagCallback callback;
+  final GlobalKey<TagWidgetState> key;
 
-  TagWidget(this._tags, {this.callback});
+  TagWidget(this._tags, {@required this.callback, @required this.key});
 
   @override
-  _TagWidgetState createState() =>
-      _TagWidgetState(this._tags, callback: this.callback);
+  TagWidgetState createState() =>
+      TagWidgetState(this._tags, callback: this.callback, key: this.key);
 }
 
-class _TagWidgetState extends State<TagWidget> {
+class TagWidgetState extends State<TagWidget> {
   List<String> _tags, _selected;
   TagCallback callback;
+  final GlobalKey<TagWidgetState> key;
 
-  _TagWidgetState(this._tags, {this.callback});
-
+  TagWidgetState(this._tags, {this.callback, this.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +31,7 @@ class _TagWidgetState extends State<TagWidget> {
       title: Text(Strings.filters),
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: Container(
@@ -39,6 +40,7 @@ class _TagWidgetState extends State<TagWidget> {
               ),
             ),
             Column(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 IconButton(
@@ -94,5 +96,13 @@ class _TagWidgetState extends State<TagWidget> {
     }
     callback(_selected);
     setState(() {});
+  }
+
+  void updateTags(List<String> newTags) {
+    setState(() {
+      _tags = newTags;
+      _selected = newTags;
+      callback(_selected);
+    });
   }
 }

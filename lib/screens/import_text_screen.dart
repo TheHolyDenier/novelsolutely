@@ -1,25 +1,23 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:novelsolutely/models/item.dart';
 
 //LIBRARIES
+import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
-import '../models/character_name.dart';
-import '../models/dictionary.dart';
-
 //MODELS
 import '../models/generic.dart';
-import '../utils/data.dart';
+import '../models/item.dart';
+import '../models/character_name.dart';
+import '../models/dictionary.dart';
 
 //UTILS
 import '../utils/dimens.dart';
 import '../utils/routes.dart';
 import '../utils/strings.dart';
+import '../utils/data.dart';
 
 class ImportTextScreen extends StatefulWidget {
   static final route = '/import-text';

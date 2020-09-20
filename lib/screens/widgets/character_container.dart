@@ -17,7 +17,6 @@ import '../../utils/dialog_anim.dart';
 import '../../utils/dimens.dart';
 import '../../utils/colors.dart';
 
-
 typedef GenericContainerCallback = void Function(NovelEventType novelEventType);
 
 class GenericContainerWidget extends StatefulWidget {
@@ -35,20 +34,21 @@ class GenericContainerWidget extends StatefulWidget {
 }
 
 class GenericContainerWidgetState extends State<GenericContainerWidget> {
-  List<Generic> _elements;
-  List<Generic> _filtered;
-  List<String> _tags = [];
-  List<String> _selected = [];
   final String typeElement;
   final String _idDictionary;
   final Key key;
   final GenericContainerCallback callback;
+  final GlobalKey<TagWidgetState> _tagKey = GlobalKey();
+
+  List<Generic> _elements;
+  List<Generic> _filtered;
+  List<String> _tags = [];
+  List<String> _selected = [];
 
   GenericContainerWidgetState(this._idDictionary,
       {this.key, this.callback, this.typeElement});
 
   void _filter({bool force = false}) {
-    // _elements = (Data.box.get(_idDictionary) as Dictionary).characters;
     _elements = Data.listToGeneric(_idDictionary, typeElement);
     if ((_elements != null && _elements.length > 0) || force) {
       _elements.sort((a, b) => a.name.compareTo(b.name));
@@ -73,6 +73,7 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
       _tags = [];
       _tagsSorted.forEach((key) => _tags.add(key.key));
     }
+    if (force) _tagKey.currentState.updateTags(_tags);
   }
 
   @override
@@ -82,13 +83,9 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
         ? Column(
             children: [
               if (_tags.isNotEmpty)
-                TagWidget(_tags, callback: (selected) {
-                  _filtered = List.from(_elements
-                      .where((character) =>
-                          selected.any((tag) => character.tags.contains(tag)))
-                      .toList());
-                  setState(() {});
-                }),
+                TagWidget(_tags,
+                    callback: (values) => _updateSelected(values),
+                    key: _tagKey),
               Expanded(
                 child: _filtered != null
                     ? ListView.builder(
@@ -171,8 +168,12 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
   void _onTapItem(Generic element) {
     if (_selected.isEmpty) {
       Navigator.pushNamed(context, CharacterScreen.route,
-          arguments:
-              PathId(dictionaryId: _idDictionary, elementId: element.id));
+              arguments:
+                  PathId(dictionaryId: _idDictionary, elementId: element.id))
+          .then((value) {
+        _filter(force: true);
+        setState(() {});
+      });
     } else
       _selectDeselect(element);
   }
@@ -227,5 +228,14 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
       });
       callback(NovelEventType.NO_CHAR_SELECTED);
     }
+  }
+
+  void _updateSelected(List<String> selected) {
+    setState(() {
+      _filtered = List.from(_elements
+          .where((character) =>
+              selected.any((tag) => character.tags.contains(tag)))
+          .toList());
+    });
   }
 }
