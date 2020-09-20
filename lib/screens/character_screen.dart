@@ -14,6 +14,7 @@ import '../models/character.dart';
 import '../models/character_name.dart';
 import '../models/dictionary.dart';
 import '../models/path_id.dart';
+import '../models/category.dart';
 
 //UTILS
 import '../utils/strings.dart';
@@ -38,120 +39,132 @@ class _CharacterScreenState extends State<CharacterScreen> {
 
   @override
   Widget build(BuildContext context) {
-      PathId pathId = ModalRoute
-          .of(context)
-          .settings
-          .arguments;
-      _setCharacter(pathId);
-      final size = MediaQuery
-        .of(context)
-        .size;
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            _dictionary.save();
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.keyboard_arrow_left),
-        ),
-        title: Text(CharacterName.readableName(_character.name)),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.edit_outlined),
-            onPressed: () =>
-                DialogAnimation.openDialog(
-                  context,
-                  GenericInputDialog(
-                    _character.toGeneric(),
-                    isCharacter: true,
-                  ),
+    PathId pathId = ModalRoute.of(context).settings.arguments;
+    _setCharacter(pathId);
+    final size = MediaQuery.of(context).size;
+    return WillPopScope(
+      onWillPop: () => _saveCharacter(context),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () => _saveCharacter(context),
+            icon: Icon(Icons.keyboard_arrow_left),
+          ),
+          title: Text(CharacterName.readableName(_character.name)),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.edit_outlined),
+              onPressed: () => DialogAnimation.openDialog(
+                context,
+                GenericInputDialog(
+                  _character.toGeneric(),
+                  isCharacter: true,
                 ),
-          ),
-          IconButton(
-            icon: Icon(Icons.add_a_photo_outlined),
-            onPressed: () =>
-                DialogAnimation.openDialog(
-                  context,
-                  ImagesInputDialog(_character.toGeneric()),
-                ).then((value) => _saveImages(value)),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            HeaderWidget(
-                name: _character.name,
-                images: _character.imagePath ?? null,
-                height: size.height / 3,
-                width: size.width,
-                key: _keyChild),
-            Container(
-              margin: EdgeInsets.symmetric(
-                vertical: Dimens.small_vertical_margin,
-                horizontal: Dimens.horizontal_margin,
-              ),
-              child: Text(
-                _character.summary,
               ),
             ),
-            Divider(),
-            Container(
-              margin: EdgeInsets.symmetric(
-                vertical: Dimens.small_vertical_margin,
-                horizontal: Dimens.horizontal_margin,
-              ),
-              child: ExpansionTile(
-                title: Text(Strings.filters),
-                children: [
-                  Tags(
-                      key: _tagStateKey,
-                      textField: TagsTextField(
-                        autofocus: false,
-                        hintText: Strings.add_tag,
-                        width: size.width,
-                        onSubmitted: (String str) {
-                          setState(() {
-                            if (!Strings.containsCaseInsensitive(
-                                str, _character.tags)) _character.tags.add(str);
-                          });
-                        },
-                      ),
-                      itemCount: _character.tags.length,
-                      itemBuilder: (int index) {
-                        final item = _character.tags[index];
-                        return ItemTags(
-                          activeColor: Palette.purple,
-                          index: index,
-                          title: item,
-                          key: Key(item),
-                          combine: ItemTagsCombine.withTextBefore,
-                          removeButton: ItemTagsRemoveButton(
-                            backgroundColor: Palette.white,
-                            color: Palette.purple,
-                            onRemoved: () {
-                              _removeItem(index);
-                              return true;
-                            },
-                          ),
-                          onPressed: (item) => _removeItem(index), // OR null,
-                        );
-                      }),
-                ],
-              ),
+            IconButton(
+              icon: Icon(Icons.add_a_photo_outlined),
+              onPressed: () => DialogAnimation.openDialog(
+                context,
+                ImagesInputDialog(_character.toGeneric()),
+              ).then((value) => _saveImages(value)),
             ),
-            MilestoneWidget(_character.personality),
-            MilestoneWidget(_character.appearance),
-            if (_character.milestones != null)
-              for (final category in _character.milestones)
-                MilestoneWidget(category),
           ],
         ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              HeaderWidget(
+                  name: _character.name,
+                  images: _character.imagePath ?? null,
+                  height: size.height / 3,
+                  width: size.width,
+                  key: _keyChild),
+              Container(
+                margin: EdgeInsets.symmetric(
+                  vertical: Dimens.small_vertical_margin,
+                  horizontal: Dimens.horizontal_margin,
+                ),
+                child: Text(
+                  _character.summary,
+                ),
+              ),
+              Divider(),
+              Container(
+                margin: EdgeInsets.symmetric(
+                  vertical: Dimens.small_vertical_margin,
+                  horizontal: Dimens.horizontal_margin,
+                ),
+                child: ExpansionTile(
+                  title: Text(Strings.filters),
+                  children: [
+                    Tags(
+                        key: _tagStateKey,
+                        textField: TagsTextField(
+                          autofocus: false,
+                          hintText: Strings.add_tag,
+                          width: size.width,
+                          onSubmitted: (String str) {
+                            setState(() {
+                              if (!Strings.containsCaseInsensitive(
+                                  str, _character.tags))
+                                _character.tags.add(str);
+                            });
+                          },
+                        ),
+                        itemCount: _character.tags.length,
+                        itemBuilder: (int index) {
+                          final item = _character.tags[index];
+                          return ItemTags(
+                            activeColor: Palette.purple,
+                            index: index,
+                            title: item,
+                            key: Key(item),
+                            combine: ItemTagsCombine.withTextBefore,
+                            removeButton: ItemTagsRemoveButton(
+                              backgroundColor: Palette.white,
+                              color: Palette.purple,
+                              onRemoved: () {
+                                _removeItem(index);
+                                return true;
+                              },
+                            ),
+                            onPressed: (item) => _removeItem(index), // OR null,
+                          );
+                        }),
+                  ],
+                ),
+              ),
+              MilestoneWidget(
+                _character.personality,
+                callback: (category) =>
+                    _saveCategory(category, id: _character.personality.id),
+              ),
+              MilestoneWidget(
+                _character.appearance,
+                callback: (category) =>
+                    _saveCategory(category, id: _character.appearance.id),
+              ),
+              if (_character.milestones != null)
+                for (final category in _character.milestones)
+                  MilestoneWidget(
+                    category,
+                    callback: (category) =>
+                        _saveCategory(category, id: category.id),
+                  ),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+            onPressed: () {}, label: Text(Strings.add_category.toUpperCase())),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {}, label: Text(Strings.add_category.toUpperCase())),
     );
+  }
+
+  Future<bool> _saveCharacter(BuildContext context) async {
+    _dictionary.save();
+    Navigator.pop(context);
+    return false;
   }
 
   void _setCharacter(PathId pathId) {
@@ -176,5 +189,17 @@ class _CharacterScreenState extends State<CharacterScreen> {
       });
     }
     _keyChild.currentState.updateImages(images);
+  }
+
+  _saveCategory(Category category, {@required String id}) {
+    if (_character.appearance.id == id) {
+      _character.appearance = category;
+    } else if (_character.personality.id == id) {
+      _character.personality = category;
+    } else {
+      _character.milestones[_character.milestones
+          .indexWhere((element) => element.id == id)] = category;
+    }
+    setState(() {});
   }
 }

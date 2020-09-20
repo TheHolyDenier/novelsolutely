@@ -31,65 +31,69 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
       _milestones = _category.milestones ?? [];
       _fillRange();
     }
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.keyboard_arrow_left),
+    return WillPopScope(
+      onWillPop: () => _saveAndExit(context),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () => _saveAndExit(context),
+            icon: Icon(Icons.keyboard_arrow_left),
+          ),
+          title: Text(_category.title),
         ),
-        title: Text(_category.title),
-      ),
-      body: Container(
-        padding: EdgeInsets.symmetric(
-            vertical: Dimens.vertical_margin,
-            horizontal: Dimens.horizontal_margin),
-        child: _milestones == null || _milestones.isEmpty
-            ? _setDivider(0)
-            : ReorderableListView(
-                children: List.generate(
-                  _milestones.length,
-                  (index) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      key: UniqueKey(),
-                      children: [
-                        _setDivider(index),
-                        ListTile(
-                          leading: Text(_milestones[index].date ?? ''),
-                          title: Text(_milestones[index].description),
-                          trailing: _selected[index]
-                              ? IconButton(
-                                  icon: Icon(Icons.delete_forever_outlined,
-                                      color: Palette.pink),
-                                  onPressed: () {
-                                    setState(() {
-                                      //TODO: dialog yes/no
-                                      _milestones.removeAt(index);
-                                    });
-                                  },
-                                )
-                              : null,
-                          onTap: () {
-                            setState(() {
-                              _selected[index] = !_selected[index];
-                            });
-                          },
-                        ),
-                        if (index == _milestones.length - 1) _setDivider(index),
-                      ],
-                    );
+        body: Container(
+          padding: EdgeInsets.symmetric(
+              vertical: Dimens.vertical_margin,
+              horizontal: Dimens.horizontal_margin),
+          child: _milestones == null || _milestones.isEmpty
+              ? _setDivider(0)
+              : ReorderableListView(
+                  children: List.generate(
+                    _milestones.length,
+                    (index) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        key: UniqueKey(),
+                        children: [
+                          _setDivider(index),
+                          ListTile(
+                            leading: Text(_milestones[index].date ?? ''),
+                            title: Text(_milestones[index].description),
+                            trailing: _selected[index]
+                                ? IconButton(
+                                    icon: Icon(Icons.delete_forever_outlined,
+                                        color: Palette.pink),
+                                    onPressed: () {
+                                      setState(() {
+                                        //TODO: dialog yes/no
+                                        _milestones.removeAt(index);
+                                      });
+                                    },
+                                  )
+                                : null,
+                            onTap: () {
+                              setState(() {
+                                _selected[index] = !_selected[index];
+                              });
+                            },
+                          ),
+                          if (index == _milestones.length - 1) _setDivider(index),
+                        ],
+                      );
+                    },
+                  ),
+                  onReorder: (oldIndex, newIndex) {
+                    setState(() {
+                      if (newIndex > oldIndex) {
+                        newIndex--;
+                      }
+                      final Milestone milestone = _milestones.removeAt(oldIndex);
+                      _milestones.insert(newIndex, milestone);
+                      _alterIds();
+                    });
                   },
                 ),
-                onReorder: (oldIndex, newIndex) {
-                  setState(() {
-                    if (newIndex > oldIndex) {
-                      newIndex--;
-                    }
-                    final Milestone milestone = _milestones.removeAt(oldIndex);
-                    _milestones.insert(newIndex, milestone);
-                  });
-                },
-              ),
+        ),
       ),
     );
   }
@@ -132,5 +136,11 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
       _milestones[i].id = i;
     }
     setState(() {});
+  }
+
+  Future<bool> _saveAndExit(BuildContext context) async {
+    _category.milestones = _milestones;
+    Navigator.pop(context, _category);
+    return false; 
   }
 }

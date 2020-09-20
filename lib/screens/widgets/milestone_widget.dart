@@ -9,10 +9,12 @@ import '../../models/category.dart';
 //UTILS
 import '../../utils/dimens.dart';
 
+typedef MilestoneCallback = void Function(Category category);
+
 class MilestoneWidget extends StatelessWidget {
   final Category _category;
-
-  MilestoneWidget(this._category);
+  final MilestoneCallback callback;
+  MilestoneWidget(this._category, {@required this.callback});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,11 @@ class MilestoneWidget extends StatelessWidget {
         trailing: Icon(Icons.keyboard_arrow_right),
         onTap: () {
           Navigator.pushNamed(context, MilestoneScreen.route,
-              arguments: _category);
+              arguments: _category).then((value) {
+                if (value is Category) {
+                  callback(value);
+                }
+          });
         },
       ),
     );
