@@ -65,7 +65,7 @@ class Data {
         break;
       case Strings.places:
         break;
-      case Strings.objects:
+      case Strings.items:
         break;
       default:
         break;
@@ -85,22 +85,27 @@ class Data {
   static bool elementExistsByName(
       String idDictionary, String type, String name) {
     Dictionary d = _box.get(idDictionary);
-    print('tmp entra $name - $type');
     switch (type) {
       case Strings.characters:
-        if (d.characters != null) print('tmp elementExistsByName name $name');
-        d.characters.indexWhere((element) {
-          print(
-              'tmp search elementExistsByName ${element.name} == name: ${element.name == name}');
-          return element.name == name;
-        });
-        return d.characters.indexWhere((element) => element.name == name) != -1;
+        if (d.characters != null) {
+          return d.characters.indexWhere((element) => element.name == name) !=
+              -1;
+        }
         break;
       case Strings.places:
+        if (d.places != null) {
+          return d.places.indexWhere((element) => element.name == name) != -1;
+        }
         break;
-      case Strings.objects:
+      case Strings.items:
+        if (d.items != null) {
+          return d.items.indexWhere((element) => element.name == name) != -1;
+        }
         break;
       default:
+        if (d.others != null) {
+          return d.others.indexWhere((element) => element.name == name) != -1;
+        }
         break;
     }
     return false;

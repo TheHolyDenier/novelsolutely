@@ -30,7 +30,7 @@ class Routes {
   static final navigation = [
     ItemNavigation(Strings.characters, Icons.people_alt_outlined),
     ItemNavigation(Strings.places, Icons.location_city_outlined),
-    ItemNavigation(Strings.objects, Icons.architecture_outlined),
+    ItemNavigation(Strings.items, Icons.architecture_outlined),
     ItemNavigation(Strings.others, Icons.art_track_outlined),
   ];
 }

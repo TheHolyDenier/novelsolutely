@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:novelsolutely/models/item.dart';
 
 //LIBRARIES
 import 'package:path_provider/path_provider.dart';
@@ -308,13 +309,16 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
             _saveCharacter(dictionary, generic);
           } else {
             Generic generic = _getGeneric(name, line);
-            //  TODO: save the others
-            _total++;
+            if (_selected[3])
+              _saveOther(dictionary, generic);
+            else
+              _saveItemOrPlace(dictionary, generic);
           }
         } else {
           name = line.trim();
         }
       } else {
+        // TODO
         _setByCharacter(line, dictionary);
       }
     }, onDone: () {
@@ -336,6 +340,40 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
       String type = Routes.navigation[index].title;
       if (!Data.elementExistsByName(_id, type, generic.name)) {
         dictionary.characters.add(generic.toCharacter());
+        _total++;
+      }
+    }
+  }
+
+  void _saveItemOrPlace(Dictionary dictionary, Generic generic) {
+    int index = _selected.indexWhere((element) => element);
+    String type = Routes.navigation[index].title;
+    if (dictionary.places == null) dictionary.places = [];
+    if (dictionary.items == null) dictionary.items = [];
+    if (generic != null) {
+      Item item = generic.toPlaceOrItem();
+      bool notFound = !Data.elementExistsByName(_id, type, generic.name);
+      if (_selected[1]) {
+        if (notFound) {
+          dictionary.places.add(item);
+          _total++;
+        }
+      } else {
+        if (notFound) {
+          dictionary.items.add(item);
+          _total++;
+        }
+      }
+    }
+  }
+
+  void _saveOther(Dictionary dictionary, Generic generic) {
+    if (dictionary.others == null) dictionary.others = [];
+    if (generic != null) {
+      int index = _selected.indexWhere((element) => element);
+      String type = Routes.navigation[index].title;
+      if (!Data.elementExistsByName(_id, type, generic.name)) {
+        dictionary.others.add(generic.toOther());
         _total++;
       }
     }

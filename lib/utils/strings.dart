@@ -15,7 +15,7 @@ class Strings {
 
   static const characters = 'Personaje';
   static const places = 'Lugar';
-  static const objects = 'Objecto';
+  static const items = 'Objecto';
 
   static const others = 'Otro';
 
