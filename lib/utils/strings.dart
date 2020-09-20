@@ -98,13 +98,16 @@ class Strings {
   static const paragraph_breakpoint = 'Párrafos diferentes';
   static const character_breakpoint = 'Por carácter';
 
-  static const check_format = 'Asegúrase de que el formato corresponde al siguiente.';
+  static const check_format =
+      'Asegúrase de que el formato corresponde al siguiente.';
 
   static const select_file = 'Buscar archivo';
 
   static const import_done = 'Importación realizada, incluidos correctamente: ';
 
   static const X = 'X';
+
+  static const date = 'Fecha';
 
   static bool containsCaseInsensitive(String s, List<String> l) {
     for (String string in l) {

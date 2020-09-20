@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+//VIEWS
+import './dialogs/new_milestone_dialog.dart';
+
 //Models
 import '../models/category.dart';
 import '../models/milestone.dart';
@@ -7,6 +10,7 @@ import '../models/milestone.dart';
 //UTILS
 import '../utils/dimens.dart';
 import '../utils/colors.dart';
+import '../utils/dialog_anim.dart';
 
 class MilestoneScreen extends StatefulWidget {
   static final route = '/milestone';
@@ -24,8 +28,8 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
   Widget build(BuildContext context) {
     if (_category == null) {
       _category = ModalRoute.of(context).settings.arguments;
-      _milestones = _category.milestones;
-      _selected = List.filled(_milestones.length, false);
+      _milestones = _category.milestones ?? [];
+      _fillRange();
     }
     return Scaffold(
       appBar: AppBar(
@@ -39,7 +43,7 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
         padding: EdgeInsets.symmetric(
             vertical: Dimens.vertical_margin,
             horizontal: Dimens.horizontal_margin),
-        child: _milestones == null || _milestones.length == 0
+        child: _milestones == null || _milestones.isEmpty
             ? _setDivider(0)
             : ReorderableListView(
                 children: List.generate(
@@ -90,14 +94,43 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
     );
   }
 
+  void _fillRange() => _selected = List.filled(_milestones.length, false);
+
   Widget _setDivider(int index) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Expanded(child: Divider()),
         IconButton(
-            onPressed: () {}, icon: Icon(Icons.add_circle_outline_outlined)),
+          onPressed: () => DialogAnimation.openDialog(
+                  context, MilestoneInputDialog(_category.title, index: index))
+              .then((value) {
+            if (value is Milestone) {
+              _add(value);
+            }
+          }),
+          icon: Icon(Icons.add_circle_outline_outlined),
+        ),
       ],
     );
+  }
+
+  void _add(Milestone milestone) {
+    if (_milestones.isEmpty) {
+      setState(() {
+        _milestones = [milestone];
+      });
+    } else {
+      _milestones.insert(milestone.id, milestone);
+      _alterIds();
+    }
+    _fillRange();
+  }
+
+  void _alterIds() {
+    for (var i = 0; i < _milestones.length; i++) {
+      _milestones[i].id = i;
+    }
+    setState(() {});
   }
 }

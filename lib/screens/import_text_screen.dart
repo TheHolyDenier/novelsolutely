@@ -77,23 +77,15 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  RaisedButton(
+                  RaisedButton.icon(
                     onPressed: _searchFile,
-                    child: Wrap(
-                      children: [
-                        Icon(Icons.attach_file),
-                        Text(Strings.select_file.toUpperCase())
-                      ],
-                    ),
+                    label: Text(Strings.select_file.toUpperCase()),
+                    icon: Icon(Icons.attach_file),
                   ),
-                  RaisedButton(
+                  RaisedButton.icon(
                     onPressed: _importElements,
-                    child: Wrap(
-                      children: [
-                        Icon(Icons.file_upload),
-                        Text(Strings.save.toUpperCase())
-                      ],
-                    ),
+                    icon: Icon(Icons.file_upload),
+                    label: Text(Strings.save.toUpperCase()),
                   ),
                 ],
               ),

@@ -38,15 +38,14 @@ class _CharacterScreenState extends State<CharacterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    PathId pathId = ModalRoute
-        .of(context)
-        .settings
-        .arguments;
-    _setCharacter(pathId);
-    final size = MediaQuery
+      PathId pathId = ModalRoute
+          .of(context)
+          .settings
+          .arguments;
+      _setCharacter(pathId);
+      final size = MediaQuery
         .of(context)
         .size;
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
