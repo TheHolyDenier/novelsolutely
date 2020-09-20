@@ -71,7 +71,6 @@ class TagWidgetState extends State<TagWidget> {
               selected: _selected.contains(tag),
               onSelected: (bool value) {
                 setState(() {
-                  print('tmp $value $_selected');
                   if (!value) {
                     _selected.removeWhere((String name) {
                       return name == tag;
@@ -79,7 +78,6 @@ class TagWidgetState extends State<TagWidget> {
                   } else {
                     _selected.add(tag);
                   }
-                  print('tmp $value $_selected');
                   callback(_selected);
                 });
               },

@@ -53,7 +53,6 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
       _elements = Data.listToGeneric(_idDictionary, typeElement);
       _elements.sort((a, b) => a.name.compareTo(b.name));
       _filtered = List.from(_elements);
-      print('tmp _setCharacterList');
       _setUpdatedTags();
     }
   }
@@ -109,8 +108,7 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
                                                     url: element.imagePath !=
                                                                 null &&
                                                             element.imagePath
-                                                                    .length >
-                                                                0
+                                                                    .isNotEmpty
                                                         ? element.imagePath[0]
                                                         : ''),
                                               ),
@@ -214,19 +212,15 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
   }
 
   void _updateSelected(List<String> selected) {
-    print('tmp $selected');
-    print('tmp ${_filtered.length}');
     setState(() {
       _filtered = List.from(_elements
           .where((character) =>
               selected.any((tag) => character.tags.contains(tag)))
           .toList());
     });
-    print('tmp ${_filtered.length}');
   }
 
   void _setUpdatedTags() {
-    print('tmp _setUpdatedTags');
     Map<String, int> tagMap = Map();
     _elements.forEach((character) {
       character.tags.forEach((tag) {

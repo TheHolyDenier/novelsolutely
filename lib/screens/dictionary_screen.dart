@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import './new_element_screen.dart';
 
 //WIDGETS
-import './widgets/character_container.dart';
+import './widgets/generic_list_widget.dart';
 import './widgets/drawer_widget.dart';
 
 //MODELS
