@@ -24,6 +24,8 @@ import '../utils/routes.dart';
 //TODO: search by name/summary
 //TODO: not always put the '?' when name nor surname is unprovided
 //TODO: still doesn't pop up characters
+//TODO: tags doesn't update in dictionary page
+//TODO: filter tag's doesn't work
 
 class DictionaryScreen extends StatefulWidget {
   static const route = "/characters";

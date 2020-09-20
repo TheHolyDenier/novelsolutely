@@ -84,13 +84,17 @@ class Data {
 
   static bool elementExistsByName(
       String idDictionary, String type, String name) {
-    bool found = false;
     Dictionary d = _box.get(idDictionary);
+    print('tmp entra $name - $type');
     switch (type) {
       case Strings.characters:
-        if (d.characters != null)
-          found =
-              d.characters.indexWhere((element) => element.name == name) != -1;
+        if (d.characters != null) print('tmp elementExistsByName name $name');
+        d.characters.indexWhere((element) {
+          print(
+              'tmp search elementExistsByName ${element.name} == name: ${element.name == name}');
+          return element.name == name;
+        });
+        return d.characters.indexWhere((element) => element.name == name) != -1;
         break;
       case Strings.places:
         break;
@@ -99,6 +103,6 @@ class Data {
       default:
         break;
     }
-    return found;
+    return false;
   }
 }

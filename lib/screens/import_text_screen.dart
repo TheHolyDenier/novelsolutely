@@ -35,7 +35,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
   int _value = 0;
   File _file;
   int _total;
-  String id;
+  String _id;
 
   final _startCharController = TextEditingController();
   final _endCharController = TextEditingController();
@@ -52,7 +52,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
 
   @override
   Widget build(BuildContext context) {
-    id = ModalRoute.of(context).settings.arguments;
+    _id = ModalRoute.of(context).settings.arguments;
     _width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _scaffoldKey,
@@ -290,7 +290,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
 
   void _readFileLineByLine(File file) {
     Stream<List<int>> inputStream = file.openRead();
-    Dictionary dictionary = Data.box.get(id);
+    Dictionary dictionary = Data.box.get(_id);
     String name;
     int i = 0;
     _total = 0;
@@ -305,12 +305,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
         if (i % 2 == 0) {
           if (_selected[0]) {
             Generic generic = _genericIsCharacter(name, line);
-            if (dictionary.characters == null) dictionary.characters = [];
-            if (!Data.elementExistsByName(
-                dictionary.id, Strings.characters, generic.name)) {
-              dictionary.characters.add(generic.toCharacter());
-              _total++;
-            }
+            _saveCharacter(dictionary, generic);
           } else {
             Generic generic = _getGeneric(name, line);
             //  TODO: save the others
@@ -334,9 +329,22 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
     });
   }
 
+  void _saveCharacter(Dictionary dictionary, Generic generic) {
+    if (dictionary.characters == null) dictionary.characters = [];
+    if (generic != null) {
+      int index = _selected.indexWhere((element) => element);
+      String type = Routes.navigation[index].title;
+      if (!Data.elementExistsByName(_id, type, generic.name)) {
+        dictionary.characters.add(generic.toCharacter());
+        _total++;
+      }
+    }
+  }
+
   void _setByCharacter(String line, Dictionary dictionary) {
-    //  TODO
-    _total++;
+    List<String> text = line.split(_paragraphController.text.trim());
+    Generic generic = _genericIsCharacter(text[0], text[1]);
+    _saveCharacter(dictionary, generic);
   }
 
   Generic _genericIsCharacter(String completeName, String summary) {
@@ -365,7 +373,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
   void _searchFile() async {
     FilePickerResult result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['txt', 'md'],
+      allowedExtensions: ['txt'],
     );
     if (result != null) {
       setState(() {

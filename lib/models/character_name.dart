@@ -10,11 +10,20 @@ class CharacterName {
       final List<String> surnameName = fullName.split(',');
       this.surname = surnameName[0].trim() ?? '';
       final List<String> nameNick = surnameName[1].split(startChar);
-      this.name = nameNick[0].trim() ?? '';
-      if (nameNick.length == 2) {
-        this.nickname = nameNick[1].replaceFirst(endChar, '').trim() ?? '';
-      } else {
-        this.nickname = '';
+      switch (nameNick.length) {
+        case 1:
+          if (nameNick[0].lastIndexOf(startChar) == -1) {
+            this.nickname = '';
+            this.name = nameNick[0].trim();
+          } else {
+            this.name = '';
+            this.nickname = nameNick[0].trim();
+          }
+          break;
+        default:
+          this.name = nameNick[0].trim() ?? '';
+          this.nickname = nameNick[1].replaceFirst(endChar, '').trim() ?? '';
+          break;
       }
     } else {
       this.name = '';
