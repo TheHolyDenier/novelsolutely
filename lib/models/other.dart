@@ -28,8 +28,6 @@ class Other {
   List<String> tags;
   @HiveField(4)
   List<String> imagePath;
-  @HiveField(5)
-  Category appearance;
   @HiveField(9)
   List<Category> milestones;
 
@@ -38,14 +36,8 @@ class Other {
       @required this.name,
       @required this.summary,
       @required this.tags,
-      this.appearance,
       this.imagePath,
-      this.milestones}) {
-    this.appearance = Category(
-        id: Uuid().v1(),
-        title: Strings.appearance,
-        milestones: appearance ?? []);
-  }
+      this.milestones});
 
   Generic toGeneric() {
     return Generic(
@@ -62,7 +54,6 @@ class Other {
         'summary': summary,
         'tags': jsonEncode(tags),
         'imagePath': jsonEncode(imagePath),
-        'appearance': appearance.toJson(),
         'milestones': milestones != null
             ? milestones.map((i) => i.toJson()).toList()
             : null,

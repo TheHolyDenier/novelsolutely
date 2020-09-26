@@ -53,7 +53,7 @@ class Item {
     this.appearance = Category(
         id: Uuid().v1(),
         title: Strings.appearance,
-        milestones: milestones ?? []);
+        milestones: appearance ?? []);
   }
 
   Generic toGeneric() {

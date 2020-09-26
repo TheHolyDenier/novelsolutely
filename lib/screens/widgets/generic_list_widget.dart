@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 //VIEWS
+import '../item_screen.dart';
 import './image_widget.dart';
 import './tag_widget.dart';
 import '../character_screen.dart';
@@ -146,8 +147,6 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
   }
 
   void _onTapItem(Generic element) {
-    print(
-        'tmp $typeElement ${Strings.others} ${Strings.others == typeElement}');
     if (_selectedElements.isEmpty) {
       switch (typeElement) {
         case Strings.characters:
@@ -157,14 +156,16 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
               .then((value) => _afterElementIsClosed());
           break;
         case Strings.others:
-          print('tmp pulsado otro');
           Navigator.pushNamed(context, OtherScreen.route,
                   arguments: IdPath(_pathId.idDictionary,
                       typeElementCategory: typeElement, idElement: element.id))
               .then((value) => _afterElementIsClosed());
           break;
         default:
-          print('tmp pulsado lugar item');
+          Navigator.pushNamed(context, ItemScreen.route,
+              arguments: IdPath(_pathId.idDictionary,
+                  typeElementCategory: typeElement, idElement: element.id))
+              .then((value) => _afterElementIsClosed());
           break;
       }
     } else

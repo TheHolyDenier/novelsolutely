@@ -12,8 +12,7 @@ import './dialogs/images_input_dialog.dart';
 import './dialogs/category_input_dialog.dart';
 
 //MODELS
-import '../models/character.dart';
-import '../models/character_name.dart';
+import '../models/item.dart' as IP;
 import '../models/dictionary.dart';
 import '../models/id_path.dart';
 import '../models/category.dart';
@@ -26,52 +25,51 @@ import '../utils/data.dart';
 import '../utils/dialog_anim.dart';
 import '../utils/dimens.dart';
 
-class CharacterScreen extends StatefulWidget {
-  static const route = '/character';
+class ItemScreen extends StatefulWidget {
+  static const route = '/item';
 
   @override
-  _CharacterScreenState createState() => _CharacterScreenState();
+  _ItemScreenState createState() => _ItemScreenState();
 }
 
-class _CharacterScreenState extends State<CharacterScreen> {
+class _ItemScreenState extends State<ItemScreen> {
   final _tagStateKey = GlobalKey<TagsState>();
-  Character _character;
+  IP.Item _item;
   Dictionary _dictionary;
   IdPath _idPath;
   GlobalKey<HeaderWidgetState> _keyChild = GlobalKey();
+  bool isItem;
 
   @override
   Widget build(BuildContext context) {
     _idPath = ModalRoute.of(context).settings.arguments;
-    _setCharacter(_idPath);
+    isItem = _idPath.typeElementCategory == Strings.items;
+
+    isItem ?_setItem(_idPath):_setPlace(_idPath);
     final size = MediaQuery.of(context).size;
     return WillPopScope(
-      onWillPop: () => _saveCharacter(context),
+      onWillPop: () => _saveItem(context),
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            onPressed: () => _saveCharacter(context),
+            onPressed: () =>_saveItem(context),
             icon: Icon(Icons.keyboard_arrow_left),
           ),
-          title: Text(
-            CharacterName.readableName(_character.name),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
+          title: Text(_item.name),
           actions: [
             IconButton(
               icon: Icon(Icons.edit_outlined),
               onPressed: () => DialogAnimation.openDialog(
                 context,
                 GenericInputDialog(
-                  _character.toGeneric(),
-                  isCharacter: true,
+                  _item.toGeneric(),
                 ),
               ).then((value) {
                 if (value is Generic) {
                   setState(() {
-                    _character.name = value.name;
-                    _character.summary = value.summary;
+                    _item.name = value.name;
+                    _item.summary = value.summary;
+                    _dictionary.save();
                   });
                 }
               }),
@@ -80,7 +78,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
               icon: Icon(Icons.add_a_photo_outlined),
               onPressed: () => DialogAnimation.openDialog(
                 context,
-                ImagesInputDialog(_character.toGeneric()),
+                ImagesInputDialog(_item.toGeneric()),
               ).then((value) => _saveImages(value)),
             ),
           ],
@@ -89,8 +87,8 @@ class _CharacterScreenState extends State<CharacterScreen> {
           child: Column(
             children: [
               HeaderWidget(
-                  name: _character.name,
-                  images: _character.imagePath ?? null,
+                  name: _item.name,
+                  images: _item.imagePath ?? null,
                   height: size.height / 3,
                   width: size.width,
                   key: _keyChild),
@@ -100,7 +98,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
                   horizontal: Dimens.horizontal_margin,
                 ),
                 child: Text(
-                  _character.summary,
+                  _item.summary,
                 ),
               ),
               Divider(),
@@ -121,15 +119,14 @@ class _CharacterScreenState extends State<CharacterScreen> {
                           onSubmitted: (String str) {
                             setState(() {
                               if (!Strings.containsCaseInsensitive(
-                                  str, _character.tags))
-                                _character.tags.add(str);
+                                  str, _item.tags)) _item.tags.add(str);
                               _dictionary.save();
                             });
                           },
                         ),
-                        itemCount: _character.tags.length,
+                        itemCount: _item.tags.length,
                         itemBuilder: (int index) {
-                          final item = _character.tags[index];
+                          final item = _item.tags[index];
                           return ItemTags(
                             activeColor: Palette.purple,
                             index: index,
@@ -152,28 +149,19 @@ class _CharacterScreenState extends State<CharacterScreen> {
               ),
               MilestoneWidget(
                 IdPath(_idPath.idDictionary,
-                    typeElementCategory: Strings.characters,
-                    idElement: _character.id,
-                    idCategory: _character.personality.id),
-                _character.personality,
+                    idElement: _item.id,
+                    typeElementCategory: _idPath.typeElementCategory,
+                    idCategory: _item.appearance.id),
+                _item.appearance,
                 callback: (category) =>
-                    _saveCategory(category, id: _character.personality.id),
+                    _saveCategory(category, id: _item.appearance.id),
               ),
-              MilestoneWidget(
-                IdPath(_idPath.idDictionary,
-                    idElement: _character.id,
-                    typeElementCategory: Strings.characters,
-                    idCategory: _character.appearance.id),
-                _character.appearance,
-                callback: (category) =>
-                    _saveCategory(category, id: _character.appearance.id),
-              ),
-              if (_character.milestones != null)
-                for (final category in _character.milestones)
+              if (_item.milestones != null)
+                for (final category in _item.milestones)
                   MilestoneWidget(
                     IdPath(_idPath.idDictionary,
-                        typeElementCategory: Strings.characters,
-                        idElement: _character.id,
+                        typeElementCategory: _idPath.typeElementCategory,
+                        idElement: _item.id,
                         idCategory: category.id),
                     category,
                     callback: (category) =>
@@ -187,9 +175,9 @@ class _CharacterScreenState extends State<CharacterScreen> {
               DialogAnimation.openDialog(context, CategoryInputDialog())
                   .then((value) {
                 if (value != null) {
-                  if (_character.milestones == null) _character.milestones = [];
+                  if (_item.milestones == null) _item.milestones = [];
                   setState(() {
-                    _character.milestones
+                    _item.milestones
                         .add(Category(id: Uuid().v1(), title: value));
                     _dictionary.save();
                   });
@@ -201,23 +189,32 @@ class _CharacterScreenState extends State<CharacterScreen> {
     );
   }
 
-  Future<bool> _saveCharacter(BuildContext context) async {
+  Future<bool> _saveItem(BuildContext context) async {
     _dictionary.save();
     Navigator.pop(context);
     return false;
   }
 
-  void _setCharacter(IdPath pathId) {
-    if (_character == null) {
+
+  void _setItem(IdPath pathId) {
+    if (_item == null) {
       _dictionary = (Data.box.get(pathId.idDictionary) as Dictionary);
-      _character = _dictionary.characters
+      _item = _dictionary.items
+          .firstWhere((element) => element.id == pathId.idElement);
+    }
+  }
+
+  void _setPlace(IdPath pathId) {
+    if (_item == null) {
+      _dictionary = (Data.box.get(pathId.idDictionary) as Dictionary);
+      _item = _dictionary.places
           .firstWhere((element) => element.id == pathId.idElement);
     }
   }
 
   void _removeItem(int index) {
     setState(() {
-      _character.tags.removeAt(index);
+      _item.tags.removeAt(index);
       _dictionary.save();
     });
   }
@@ -225,7 +222,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
   void _saveImages(List<String> images) {
     if (images != null && images.length > 0) {
       setState(() {
-        _character.imagePath = [...images];
+        _item.imagePath = [...images];
         _dictionary.save();
       });
     }
@@ -233,12 +230,10 @@ class _CharacterScreenState extends State<CharacterScreen> {
   }
 
   _saveCategory(Category category, {@required String id}) {
-    if (_character.appearance.id == id) {
-      _character.appearance = category;
-    } else if (_character.personality.id == id) {
-      _character.personality = category;
+    if (_item.appearance.id == id) {
+      _item.appearance = category;
     } else {
-      _character.milestones[_character.milestones
+      _item.milestones[_item.milestones
           .indexWhere((element) => element.id == id)] = category;
     }
     setState(() {});

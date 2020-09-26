@@ -17,17 +17,14 @@ import '../utils/data.dart';
 import '../utils/dimens.dart';
 import '../utils/routes.dart';
 
-//TODO: add new categories
-//TODO: save categories
 //TODO: export database to JSON
-//TODO: quick add elements
 //TODO: search by name/summary
-//TODO: still doesn't pop up characters?? check
 //TODO: delete categories
-//TODO: new characters doesn't show up!!
-//TODO: delete other
-//TODO: delete items
-//TODO: delete places
+//TODO: IMPORT OTHERS
+//TODO: IMPORT PLACES
+//TODO: IMPORT ITEMS
+//TODO: PLACES
+//TODO: ITEMS
 
 class DictionaryScreen extends StatefulWidget {
   static const route = "/characters";
@@ -155,7 +152,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           return Navigator.pushNamed(context, NewElementScreen.route,
-            arguments: _idPath);
+              arguments: _idPath);
         },
         child: Icon(Icons.add),
         elevation: 2.0,

@@ -144,15 +144,6 @@ class _OtherScreenState extends State<OtherScreen> {
                   ],
                 ),
               ),
-              MilestoneWidget(
-                IdPath(_idPath.idDictionary,
-                    idElement: _other.id,
-                    typeElementCategory: Strings.others,
-                    idCategory: _other.appearance.id),
-                _other.appearance,
-                callback: (category) =>
-                    _saveCategory(category, id: _other.appearance.id),
-              ),
               if (_other.milestones != null)
                 for (final category in _other.milestones)
                   MilestoneWidget(
@@ -218,12 +209,8 @@ class _OtherScreenState extends State<OtherScreen> {
   }
 
   _saveCategory(Category category, {@required String id}) {
-    if (_other.appearance.id == id) {
-      _other.appearance = category;
-    } else {
-      _other.milestones[_other.milestones
-          .indexWhere((element) => element.id == id)] = category;
-    }
+    _other.milestones[
+        _other.milestones.indexWhere((element) => element.id == id)] = category;
     setState(() {});
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:novelsolutely/screens/item_screen.dart';
 
 //WIDGETS
 import '../screens/character_screen.dart';
@@ -21,6 +22,7 @@ class Routes {
     MainScreen.route: (context) => MainScreen(),
     DictionaryScreen.route: (context) => DictionaryScreen(),
     CharacterScreen.route: (context) => CharacterScreen(),
+    ItemScreen.route: (context) => ItemScreen(),
     OtherScreen.route: (context) => OtherScreen(),
     MilestoneScreen.route: (context) => MilestoneScreen(),
     NewElementScreen.route: (context) => NewElementScreen(),

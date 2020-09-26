@@ -29,7 +29,6 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
   List<bool> _selected;
 
   IdPath _idPath;
-
   double _heightListTile = 48.0;
 
   @override
@@ -101,10 +100,15 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
   void _setInitialElements(BuildContext context) {
     _dictionary = Data.box.get(_idPath.idDictionary);
     if (_idPath.typeElementCategory != null) {
-      print('tmp type ${_idPath.typeElementCategory}');
       switch (_idPath.typeElementCategory) {
         case Strings.characters:
           _searchCharacter();
+          break;
+        case Strings.items:
+          _searchItems();
+          break;
+        case Strings.places:
+          _searchPlaces();
           break;
         default:
           _searchOther();
@@ -112,23 +116,48 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
       }
       if (_category == null) Navigator.of(context).pop();
     }
-    if (_category.milestones == null) _category.milestones = [];
+    if (_category != null && _category.milestones == null)
+      _category.milestones = [];
     _dictionary.save();
-    _fillRange();
+    if (_category != null && _category.milestones != null && _category.milestones.isNotEmpty)
+      _fillRange();
+    else
+      _selected = [];
   }
 
   void _searchOther() {
     int index = _dictionary.others
         .indexWhere((element) => element.id == _idPath.idElement);
-    if (_dictionary.others[index].appearance.id ==
-        _idPath.idCategory) {
-      _category = _dictionary.others[index].appearance;
-    }  else {
-      if (_dictionary.others[index].milestones != null) {
-        for (Category category
-        in _dictionary.others[index].milestones) {
-          if (category.id == _idPath.idCategory) _category = category;
-        }
+
+    if (_dictionary.others[index].milestones != null) {
+      for (Category category in _dictionary.others[index].milestones) {
+        if (category.id == _idPath.idCategory) _category = category;
+      }
+    }
+  }
+
+  void _searchPlaces() {
+    int index = _dictionary.places
+        .indexWhere((element) => element.id == _idPath.idElement);
+
+    if (_dictionary.places[index].appearance.id == _idPath.idCategory) {
+      _category = _dictionary.places[index].appearance;
+    } else if (_dictionary.places[index].milestones != null) {
+      for (Category category in _dictionary.places[index].milestones) {
+        if (category.id == _idPath.idCategory) _category = category;
+      }
+    }
+  }
+
+  void _searchItems() {
+    int index = _dictionary.items
+        .indexWhere((element) => element.id == _idPath.idElement);
+
+    if (_dictionary.items[index].appearance.id == _idPath.idCategory) {
+      _category = _dictionary.items[index].appearance;
+    } else if (_dictionary.items[index].milestones != null) {
+      for (Category category in _dictionary.items[index].milestones) {
+        if (category.id == _idPath.idCategory) _category = category;
       }
     }
   }
@@ -136,16 +165,14 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
   void _searchCharacter() {
     int index = _dictionary.characters
         .indexWhere((element) => element.id == _idPath.idElement);
-    if (_dictionary.characters[index].appearance.id ==
-        _idPath.idCategory) {
+    if (_dictionary.characters[index].appearance.id == _idPath.idCategory) {
       _category = _dictionary.characters[index].appearance;
     } else if (_dictionary.characters[index].personality.id ==
         _idPath.idCategory) {
       _category = _dictionary.characters[index].personality;
     } else {
       if (_dictionary.characters[index].milestones != null) {
-        for (Category category
-            in _dictionary.characters[index].milestones) {
+        for (Category category in _dictionary.characters[index].milestones) {
           if (category.id == _idPath.idCategory) _category = category;
         }
       }
