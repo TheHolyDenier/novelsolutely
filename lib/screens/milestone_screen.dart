@@ -7,13 +7,11 @@ import './dialogs/delete_dialog.dart';
 //Models
 import '../models/category.dart';
 import '../models/milestone.dart';
-import '../models/character.dart';
 import '../models/dictionary.dart';
 import '../models/id_path.dart';
 
 //UTILS
 import '../utils/dimens.dart';
-import '../utils/colors.dart';
 import '../utils/dialog_anim.dart';
 import '../utils/data.dart';
 import '../utils/strings.dart';
@@ -103,26 +101,13 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
   void _setInitialElements(BuildContext context) {
     _dictionary = Data.box.get(_idPath.idDictionary);
     if (_idPath.typeElementCategory != null) {
+      print('tmp type ${_idPath.typeElementCategory}');
       switch (_idPath.typeElementCategory) {
         case Strings.characters:
-          int index = _dictionary.characters
-              .indexWhere((element) => element.id == _idPath.idElement);
-          if (_dictionary.characters[index].appearance.id ==
-              _idPath.idCategory) {
-            _category = _dictionary.characters[index].appearance;
-          } else if (_dictionary.characters[index].personality.id ==
-              _idPath.idCategory) {
-            _category = _dictionary.characters[index].personality;
-          } else {
-            if (_dictionary.characters[index].milestones != null) {
-              for (Category category
-                  in _dictionary.characters[index].milestones) {
-                if (category.id == _idPath.idCategory) _category = category;
-              }
-            }
-          }
+          _searchCharacter();
           break;
         default:
+          _searchOther();
           break;
       }
       if (_category == null) Navigator.of(context).pop();
@@ -130,6 +115,41 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
     if (_category.milestones == null) _category.milestones = [];
     _dictionary.save();
     _fillRange();
+  }
+
+  void _searchOther() {
+    int index = _dictionary.others
+        .indexWhere((element) => element.id == _idPath.idElement);
+    if (_dictionary.others[index].appearance.id ==
+        _idPath.idCategory) {
+      _category = _dictionary.others[index].appearance;
+    }  else {
+      if (_dictionary.others[index].milestones != null) {
+        for (Category category
+        in _dictionary.others[index].milestones) {
+          if (category.id == _idPath.idCategory) _category = category;
+        }
+      }
+    }
+  }
+
+  void _searchCharacter() {
+    int index = _dictionary.characters
+        .indexWhere((element) => element.id == _idPath.idElement);
+    if (_dictionary.characters[index].appearance.id ==
+        _idPath.idCategory) {
+      _category = _dictionary.characters[index].appearance;
+    } else if (_dictionary.characters[index].personality.id ==
+        _idPath.idCategory) {
+      _category = _dictionary.characters[index].personality;
+    } else {
+      if (_dictionary.characters[index].milestones != null) {
+        for (Category category
+            in _dictionary.characters[index].milestones) {
+          if (category.id == _idPath.idCategory) _category = category;
+        }
+      }
+    }
   }
 
   Widget _setDeleteBtn(int index) {

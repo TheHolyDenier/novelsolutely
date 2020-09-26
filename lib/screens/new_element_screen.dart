@@ -280,8 +280,8 @@ class _NewElementScreenState extends State<NewElementScreen> {
   }
 
   void _saveElement() {
+  print('tmp entra');
     if (_selected[0]) _saveCharacter();
-
     if (_selected[1]) _savePlace();
     if (_selected[2]) _saveItem();
     if (_selected[3]) _saveOther();

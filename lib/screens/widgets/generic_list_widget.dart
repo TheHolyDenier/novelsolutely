@@ -5,17 +5,20 @@ import './image_widget.dart';
 import './tag_widget.dart';
 import '../character_screen.dart';
 import '../dialogs/delete_dialog.dart';
+import '../other_screen.dart';
 
 //MODELS
 import '../../models/enum/novel_event_type.dart';
 import '../../models/generic.dart';
 import '../../models/id_path.dart';
+import '../../models/dictionary.dart';
 
 //UTILS
 import '../../utils/data.dart';
 import '../../utils/dialog_anim.dart';
 import '../../utils/dimens.dart';
 import '../../utils/colors.dart';
+import '../../utils/strings.dart';
 
 typedef GenericContainerCallback = void Function(NovelEventType novelEventType);
 
@@ -143,17 +146,35 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
   }
 
   void _onTapItem(Generic element) {
+    print(
+        'tmp $typeElement ${Strings.others} ${Strings.others == typeElement}');
     if (_selectedElements.isEmpty) {
-      Navigator.pushNamed(context, CharacterScreen.route,
-              arguments:
-                  IdPath(_pathId.idDictionary, typeElementCategory: typeElement, idElement: element.id))
-          .then((value) {
-        _setElementList(force: true);
-        _tagKey.currentState.updateTags(_tags);
-        setState(() {});
-      });
+      switch (typeElement) {
+        case Strings.characters:
+          Navigator.pushNamed(context, CharacterScreen.route,
+                  arguments: IdPath(_pathId.idDictionary,
+                      typeElementCategory: typeElement, idElement: element.id))
+              .then((value) => _afterElementIsClosed());
+          break;
+        case Strings.others:
+          print('tmp pulsado otro');
+          Navigator.pushNamed(context, OtherScreen.route,
+                  arguments: IdPath(_pathId.idDictionary,
+                      typeElementCategory: typeElement, idElement: element.id))
+              .then((value) => _afterElementIsClosed());
+          break;
+        default:
+          print('tmp pulsado lugar item');
+          break;
+      }
     } else
       _selectDeselect(element);
+  }
+
+  void _afterElementIsClosed() {
+    _setElementList(force: true);
+    _tagKey.currentState.updateTags(_tags);
+    setState(() {});
   }
 
   void _selectDeselect(Generic element) {
@@ -197,10 +218,11 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
     if (value) {
       List selected = List.from(_selectedElements);
       selected.forEach((id) {
-        Data.deleteCharacter(_pathId.idDictionary, id);
+        Data.deleteElement(typeElement, _pathId.idDictionary, id);
         _selectedElements.remove(id);
       });
-      Data.box.get(_pathId).save();
+      Dictionary dictionary = Data.box.get(_pathId.idDictionary);
+      dictionary.save();
       setState(() {
         _setElementList(force: true);
       });

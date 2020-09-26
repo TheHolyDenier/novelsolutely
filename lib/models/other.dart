@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 
 //LIBRARIES
 import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
 
 //MODELS
 import './category.dart';
 import './generic.dart';
 
 //UTILS
+import '../utils/strings.dart';
 
 part 'other.g.dart';
 
@@ -36,8 +38,14 @@ class Other {
       @required this.name,
       @required this.summary,
       @required this.tags,
+      this.appearance,
       this.imagePath,
-      this.milestones});
+      this.milestones}) {
+    this.appearance = Category(
+        id: Uuid().v1(),
+        title: Strings.appearance,
+        milestones: appearance ?? []);
+  }
 
   Generic toGeneric() {
     return Generic(

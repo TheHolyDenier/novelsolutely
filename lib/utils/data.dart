@@ -48,10 +48,31 @@ class Data {
 
   static void delete(String id) => Data.box.delete(id);
 
-  static void deleteCharacter(String idDictionary, String idCharacter) =>
-      getDictionary(idDictionary)
-          .characters
-          .removeWhere((element) => element.id == idCharacter);
+  static void deleteElement(
+      String typeElement, String idDictionary, String idElement) {
+    switch (typeElement) {
+      case Strings.characters:
+        getDictionary(idDictionary)
+            .characters
+            .removeWhere((element) => element.id == idElement);
+        break;
+      case Strings.places:
+        getDictionary(idDictionary)
+            .places
+            .removeWhere((element) => element.id == idElement);
+        break;
+      case Strings.items:
+        getDictionary(idDictionary)
+            .items
+            .removeWhere((element) => element.id == idElement);
+        break;
+      default:
+        getDictionary(idDictionary)
+            .others
+            .removeWhere((element) => element.id == idElement);
+        break;
+    }
+  }
 
   static Dictionary getDictionary(String id) => Data.box.get(id);
 
