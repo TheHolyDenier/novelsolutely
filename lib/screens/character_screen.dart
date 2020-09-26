@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 //LIBRARIES
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:novelsolutely/screens/dialogs/category_input_dialog.dart';
+import 'package:uuid/uuid.dart';
 
 //SCREENS && WIDGETS
 import './widgets/header_widget.dart';
@@ -51,7 +53,11 @@ class _CharacterScreenState extends State<CharacterScreen> {
             onPressed: () => _saveCharacter(context),
             icon: Icon(Icons.keyboard_arrow_left),
           ),
-          title: Text(CharacterName.readableName(_character.name), maxLines: 1, overflow: TextOverflow.ellipsis,),
+          title: Text(
+            CharacterName.readableName(_character.name),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
           actions: [
             IconButton(
               icon: Icon(Icons.edit_outlined),
@@ -164,7 +170,19 @@ class _CharacterScreenState extends State<CharacterScreen> {
           ),
         ),
         floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {}, label: Text(Strings.add_category.toUpperCase())),
+            onPressed: () {
+              DialogAnimation.openDialog(context, CategoryInputDialog())
+                  .then((value) {
+                if (value != null) {
+                  if (_character.milestones == null) _character.milestones = [];
+                  setState(() {
+                    _character.milestones
+                        .add(Category(id: Uuid().v1(), title: value));
+                  });
+                }
+              });
+            },
+            label: Text(Strings.add_category.toUpperCase())),
       ),
     );
   }

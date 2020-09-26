@@ -109,6 +109,12 @@ class Strings {
 
   static const date = 'Fecha';
 
+  static const instructions_new_category = 'Tenga en cuenta que las categorías se ordenan de forma alfabética. Si desea mantener un orden, incluya un índice.';
+
+  static const new_category = 'Nueva categoría';
+
+  static const new_category_name = 'Nombre de la categoría';
+static const new_category_helper =  'Recuerde que puede añadir un índice numérico o alfabético, como: 01 Infacia';
   static bool containsCaseInsensitive(String s, List<String> l) {
     for (String string in l) {
       if (string.toLowerCase() == s.toLowerCase()) {
