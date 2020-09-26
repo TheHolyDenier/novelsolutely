@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 //LIBRARIES
 import 'package:flutter_tags/flutter_tags.dart';
-import 'package:novelsolutely/screens/dialogs/category_input_dialog.dart';
 import 'package:uuid/uuid.dart';
 
 //SCREENS && WIDGETS
@@ -10,12 +9,13 @@ import './widgets/header_widget.dart';
 import './widgets/milestone_widget.dart';
 import './dialogs/generic_input_dialog.dart';
 import './dialogs/images_input_dialog.dart';
+import './dialogs/category_input_dialog.dart';
 
 //MODELS
 import '../models/character.dart';
 import '../models/character_name.dart';
 import '../models/dictionary.dart';
-import '../models/path_id.dart';
+import '../models/id_path.dart';
 import '../models/category.dart';
 import '../models/generic.dart';
 
@@ -37,13 +37,13 @@ class _CharacterScreenState extends State<CharacterScreen> {
   final _tagStateKey = GlobalKey<TagsState>();
   Character _character;
   Dictionary _dictionary;
-
+  IdPath _idPath;
   GlobalKey<HeaderWidgetState> _keyChild = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    PathId pathId = ModalRoute.of(context).settings.arguments;
-    _setCharacter(pathId);
+    _idPath = ModalRoute.of(context).settings.arguments;
+    _setCharacter(_idPath);
     final size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () => _saveCharacter(context),
@@ -150,11 +150,17 @@ class _CharacterScreenState extends State<CharacterScreen> {
                 ),
               ),
               MilestoneWidget(
+                IdPath(_idPath.idDictionary,
+                    idElement: _character.id,
+                    idCategory: _character.personality.id),
                 _character.personality,
                 callback: (category) =>
                     _saveCategory(category, id: _character.personality.id),
               ),
               MilestoneWidget(
+                IdPath(_idPath.idDictionary,
+                    idElement: _character.id,
+                    idCategory: _character.appearance.id),
                 _character.appearance,
                 callback: (category) =>
                     _saveCategory(category, id: _character.appearance.id),
@@ -162,6 +168,8 @@ class _CharacterScreenState extends State<CharacterScreen> {
               if (_character.milestones != null)
                 for (final category in _character.milestones)
                   MilestoneWidget(
+                    IdPath(_idPath.idDictionary,
+                        idElement: _character.id, idCategory: category.id),
                     category,
                     callback: (category) =>
                         _saveCategory(category, id: category.id),
@@ -193,11 +201,11 @@ class _CharacterScreenState extends State<CharacterScreen> {
     return false;
   }
 
-  void _setCharacter(PathId pathId) {
+  void _setCharacter(IdPath pathId) {
     if (_character == null) {
-      _dictionary = (Data.box.get(pathId.dictionaryId) as Dictionary);
+      _dictionary = (Data.box.get(pathId.idDictionary) as Dictionary);
       _character = _dictionary.characters
-          .firstWhere((element) => element.id == pathId.elementId);
+          .firstWhere((element) => element.id == pathId.idElement);
     }
   }
 

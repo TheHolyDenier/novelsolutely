@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:novelsolutely/models/id_path.dart';
 
 //LIBRARIES
 import 'package:uuid/uuid.dart';
@@ -7,7 +8,6 @@ import 'package:uuid/uuid.dart';
 import '../models/character.dart';
 
 //MODELS
-import '../models/character_name.dart';
 import '../models/character_name.dart';
 import '../models/dictionary.dart';
 
@@ -42,6 +42,7 @@ class _NewElementScreenState extends State<NewElementScreen> {
   List<bool> _selected;
   double _width;
   Dictionary _dictionary;
+  IdPath _idPath;
 
   @override
   void initState() {
@@ -52,9 +53,11 @@ class _NewElementScreenState extends State<NewElementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String id = ModalRoute.of(context).settings.arguments;
-    _dictionary = Data.box.get(id);
+    _idPath = ModalRoute.of(context).settings.arguments;
+    _dictionary = Data.box.get(_idPath.idDictionary);
+
     _width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -287,11 +290,7 @@ class _NewElementScreenState extends State<NewElementScreen> {
         name: _nameController.text.trim(),
         surname: _surnameController.text.trim(),
         nickname: _nicknameController.text.trim());
-    // var name = '${_surnameController.text.trim()},';
-    // if (_nameController.text.trim().isNotEmpty)
-    //   name += ' ${_nameController.text.trim()}';
-    // if (_nicknameController.text.trim().isNotEmpty)
-    //   name += ' «${_nicknameController.text.trim()}»';
+
     Character character = Character(
       id: Uuid().v1(),
       name: name.registerName(),

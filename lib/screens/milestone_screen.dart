@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:novelsolutely/models/character.dart';
+import 'package:novelsolutely/models/dictionary.dart';
+import 'package:novelsolutely/models/id_path.dart';
+import 'package:novelsolutely/utils/data.dart';
+import 'package:novelsolutely/utils/strings.dart';
 
 //VIEWS
 import './dialogs/new_milestone_dialog.dart';
@@ -25,14 +30,15 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
   List<Milestone> _milestones;
   List<bool> _selected;
 
+  IdPath _idPath;
+
   double _heightListTile = 48.0;
 
   @override
   Widget build(BuildContext context) {
     if (_category == null) {
-      _category = ModalRoute.of(context).settings.arguments;
-      _milestones = _category.milestones ?? [];
-      _fillRange();
+      _idPath = ModalRoute.of(context).settings.arguments;
+      _setInitialElements(context);
     }
     return WillPopScope(
       onWillPop: () => _saveAndExit(context),
@@ -94,6 +100,34 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
     );
   }
 
+  void _setInitialElements(BuildContext context) {
+    Dictionary dictionary = Data.box.get(_idPath.idDictionary);
+    if (_idPath.typeElementCategory != null) {
+      switch (_idPath.typeElementCategory) {
+        case Strings.characters:
+          Character character = dictionary.characters
+              .firstWhere((element) => element.id == _idPath.idElement);
+          if (character.appearance.id == _idPath.idCategory) {
+            _category = character.appearance;
+          } else if (character.personality.id == _idPath.idCategory) {
+            _category = character.personality;
+          } else {
+            if (character.milestones != null) {
+              for (Category category in character.milestones) {
+                if (category.id == _idPath.idCategory) _category = category;
+              }
+            }
+          }
+          break;
+        default:
+          break;
+      }
+      if (_category == null) Navigator.of(context).pop();
+    }
+    _milestones = _category.milestones ?? [];
+    _fillRange();
+  }
+
   Widget _setDeleteBtn(int index) {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -133,18 +167,22 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                 Icons.edit_outlined,
                 color: Colors.white,
               ),
-              onPressed:() =>
-                  DialogAnimation.openDialog(
-                      context, MilestoneInputDialog(_category.title, milestone: _milestones[index],))
-                      .then((value) {
-                    if (value is Milestone) {
-                      setState(() {
-                        print('tmp ${value.id} ${value.date??''} ${value.description}');
-                        _milestones[_milestones.indexWhere((element) => element.id == value.id)] = value;
-                        _selected[index] = false;
-                      });
-                    }
-                  }),
+              onPressed: () => DialogAnimation.openDialog(
+                  context,
+                  MilestoneInputDialog(
+                    _category.title,
+                    milestone: _milestones[index],
+                  )).then((value) {
+                if (value is Milestone) {
+                  setState(() {
+                    print(
+                        'tmp ${value.id} ${value.date ?? ''} ${value.description}');
+                    _milestones[_milestones.indexWhere(
+                        (element) => element.id == value.id)] = value;
+                    _selected[index] = false;
+                  });
+                }
+              }),
             ),
           ),
         ),
@@ -183,7 +221,8 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
     );
   }
 
-  void _fillRange() => _selected = List.filled(_milestones.length, false, growable: true);
+  void _fillRange() =>
+      _selected = List.filled(_milestones.length, false, growable: true);
 
   Widget _setDivider(int index) {
     return Row(

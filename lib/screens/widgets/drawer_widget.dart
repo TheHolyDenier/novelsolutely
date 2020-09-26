@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novelsolutely/models/id_path.dart';
 
 //WIDGETS
 import './image_widget.dart';
@@ -94,7 +95,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
           Divider(),
           ListTile(
-            onTap: () => Navigator.pushNamed(context, ImportTextScreen.route, arguments: _active.id),
+            onTap: () => Navigator.pushNamed(context, ImportTextScreen.route, arguments: IdPath(_active.id)),
             leading: Icon(Icons.import_contacts),
             title: Text(Strings.import_from_text),
           ),
@@ -118,7 +119,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                       onTap: () {
                         Navigator.pushReplacementNamed(
                             context, DictionaryScreen.route,
-                            arguments: dictionary.id);
+                            arguments: IdPath(_active.id));
                       },
                       leading: Container(
                         width: 50,

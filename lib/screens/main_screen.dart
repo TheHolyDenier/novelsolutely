@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:novelsolutely/models/id_path.dart';
 
 //LIBRARIES
 
@@ -189,7 +190,7 @@ class _MainScreenState extends State<MainScreen> {
   void _onTapItem(String id) {
     if (_selected.isEmpty) {
       Navigator.pushReplacementNamed(context, DictionaryScreen.route,
-          arguments: id);
+          arguments: IdPath(id));
     } else {
       _onLongClickItem(id);
     }

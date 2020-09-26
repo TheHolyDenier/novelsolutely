@@ -9,7 +9,7 @@ import '../dialogs/delete_dialog.dart';
 //MODELS
 import '../../models/enum/novel_event_type.dart';
 import '../../models/generic.dart';
-import '../../models/path_id.dart';
+import '../../models/id_path.dart';
 
 //UTILS
 import '../../utils/data.dart';
@@ -20,7 +20,7 @@ import '../../utils/colors.dart';
 typedef GenericContainerCallback = void Function(NovelEventType novelEventType);
 
 class GenericContainerWidget extends StatefulWidget {
-  final String id;
+  final IdPath id;
   final String type;
   final key;
   final GenericContainerCallback callback;
@@ -35,7 +35,7 @@ class GenericContainerWidget extends StatefulWidget {
 
 class GenericContainerWidgetState extends State<GenericContainerWidget> {
   final String typeElement;
-  final String _idDictionary;
+  final IdPath _pathId;
   final Key key;
   final GenericContainerCallback callback;
   final GlobalKey<TagWidgetState> _tagKey = GlobalKey();
@@ -45,12 +45,12 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
   List<String> _tags = [];
   List<String> _selectedElements = [];
 
-  GenericContainerWidgetState(this._idDictionary,
+  GenericContainerWidgetState(this._pathId,
       {this.key, this.callback, this.typeElement});
 
   void _setCharacterList({bool force = false}) {
     if ((_allElements == null || _allElements.isEmpty) || force) {
-      _allElements = Data.listToGeneric(_idDictionary, typeElement);
+      _allElements = Data.listToGeneric(_pathId.idDictionary, typeElement);
       _allElements.sort((a, b) => a.name.compareTo(b.name));
       _filteredElements = List.from(_allElements);
       _checkTags();
@@ -146,7 +146,7 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
     if (_selectedElements.isEmpty) {
       Navigator.pushNamed(context, CharacterScreen.route,
               arguments:
-                  PathId(dictionaryId: _idDictionary, elementId: element.id))
+                  IdPath(_pathId.idDictionary, typeElementCategory: typeElement, idElement: element.id))
           .then((value) {
         _setCharacterList(force: true);
         _tagKey.currentState.updateTags(_tags);
@@ -197,10 +197,10 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
     if (value) {
       List selected = List.from(_selectedElements);
       selected.forEach((id) {
-        Data.deleteCharacter(_idDictionary, id);
+        Data.deleteCharacter(_pathId.idDictionary, id);
         _selectedElements.remove(id);
       });
-      Data.box.get(_idDictionary).save();
+      Data.box.get(_pathId).save();
       setState(() {
         _setCharacterList(force: true);
       });

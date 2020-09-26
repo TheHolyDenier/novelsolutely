@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novelsolutely/models/id_path.dart';
 
 import './new_element_screen.dart';
 
@@ -42,10 +43,12 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
   bool _selecting = false;
   Size _size;
 
+  IdPath _idPath;
+
   @override
   Widget build(BuildContext context) {
-    String id = ModalRoute.of(context).settings.arguments;
-    Dictionary dictionary = Data.box.get(id);
+    _idPath = ModalRoute.of(context).settings.arguments;
+    Dictionary dictionary = Data.box.get(_idPath.idDictionary);
     _size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -93,7 +96,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
           children: [
             for (var i = 0; i < Routes.navigation.length; i++)
               GenericContainerWidget(
-                dictionary.id,
+                _idPath,
                 key: _keys[i],
                 callback: (NovelEventType novelEventType) =>
                     _receiveEvent(novelEventType),
@@ -146,8 +149,10 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, NewElementScreen.route,
-            arguments: dictionary.id),
+        onPressed: () {
+          return Navigator.pushNamed(context, NewElementScreen.route,
+            arguments: _idPath);
+        },
         child: Icon(Icons.add),
         elevation: 2.0,
       ),

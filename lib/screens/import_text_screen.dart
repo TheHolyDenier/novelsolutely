@@ -12,6 +12,7 @@ import '../models/generic.dart';
 import '../models/item.dart';
 import '../models/character_name.dart';
 import '../models/dictionary.dart';
+import '../models/id_path.dart';
 
 //UTILS
 import '../utils/dimens.dart';
@@ -34,7 +35,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
   int _value = 0;
   File _file;
   int _total;
-  String _id;
+  IdPath _idPath;
 
   final _startCharController = TextEditingController();
   final _endCharController = TextEditingController();
@@ -51,7 +52,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _id = ModalRoute.of(context).settings.arguments;
+    _idPath = ModalRoute.of(context).settings.arguments;
     _width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _scaffoldKey,
@@ -281,7 +282,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
 
   void _readFileLineByLine(File file) {
     Stream<List<int>> inputStream = file.openRead();
-    Dictionary dictionary = Data.box.get(_id);
+    Dictionary dictionary = Data.box.get(_idPath.idDictionary);
     String name;
     int i = 0;
     _total = 0;
@@ -328,7 +329,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
     if (generic != null) {
       int index = _selected.indexWhere((element) => element);
       String type = Routes.navigation[index].title;
-      if (!Data.elementExistsByName(_id, type, generic.name)) {
+      if (!Data.elementExistsByName(_idPath.idDictionary, type, generic.name)) {
         dictionary.characters.add(generic.toCharacter());
         _total++;
       }
@@ -342,7 +343,8 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
     if (dictionary.items == null) dictionary.items = [];
     if (generic != null) {
       Item item = generic.toPlaceOrItem();
-      bool notFound = !Data.elementExistsByName(_id, type, generic.name);
+      bool notFound =
+          !Data.elementExistsByName(_idPath.idDictionary, type, generic.name);
       if (_selected[1]) {
         if (notFound) {
           dictionary.places.add(item);
@@ -362,7 +364,7 @@ class _ImportTextScreenState extends State<ImportTextScreen> {
     if (generic != null) {
       int index = _selected.indexWhere((element) => element);
       String type = Routes.navigation[index].title;
-      if (!Data.elementExistsByName(_id, type, generic.name)) {
+      if (!Data.elementExistsByName(_idPath.idDictionary, type, generic.name)) {
         dictionary.others.add(generic.toOther());
         _total++;
       }
