@@ -6,27 +6,27 @@ import '../../utils/strings.dart';
 typedef TagCallback = void Function(List<String> selected);
 
 class TagWidget extends StatefulWidget {
-  final List<String> _tags;
+  // final List<String> _tags;
   final TagCallback callback;
   final GlobalKey<TagWidgetState> key;
 
-  TagWidget(this._tags, {@required this.callback, @required this.key});
+  TagWidget({@required this.callback, @required this.key});
 
   @override
   TagWidgetState createState() =>
-      TagWidgetState(this._tags, callback: this.callback, key: this.key);
+      TagWidgetState(callback: this.callback, key: this.key);
 }
 
 class TagWidgetState extends State<TagWidget> {
-  List<String> _tags, _selected;
+  List<String> _tagsList = [];
+  List<String> _selected = [];
   TagCallback callback;
   final GlobalKey<TagWidgetState> key;
 
-  TagWidgetState(this._tags, {this.callback, this.key});
+  TagWidgetState({this.callback, this.key});
 
   @override
   Widget build(BuildContext context) {
-    if (_selected == null) _selected = List.from(_tags);
     return ExpansionTile(
       title: Text(Strings.filters),
       children: [
@@ -64,7 +64,7 @@ class TagWidgetState extends State<TagWidget> {
       child: Wrap(
         alignment: WrapAlignment.spaceAround,
         children: [
-          for (var tag in _tags)
+          for (var tag in _tagsList)
             FilterChip(
               selectedColor: Theme.of(context).accentColor,
               showCheckmark: false,
@@ -90,7 +90,7 @@ class TagWidgetState extends State<TagWidget> {
 
   void _select(bool tagsState) {
     if (tagsState) {
-      _selected = List.from(_tags);
+      _selected = List.from(_tagsList);
     } else {
       _selected.length = 0;
     }
@@ -100,7 +100,7 @@ class TagWidgetState extends State<TagWidget> {
 
   void updateTags(List<String> newTags) {
     setState(() {
-      _tags = newTags;
+      _tagsList = newTags;
       _selected = newTags;
       callback(_selected);
     });

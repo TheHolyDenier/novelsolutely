@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 //VIEWS
@@ -64,7 +66,7 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
         ? Column(
             children: [
               if (_tags.isNotEmpty)
-                TagWidget(_tags,
+                TagWidget(
                     callback: (values) => _updateSelected(values),
                     key: _tagKey),
               Expanded(
@@ -108,7 +110,7 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
                                                     url: element.imagePath !=
                                                                 null &&
                                                             element.imagePath
-                                                                    .isNotEmpty
+                                                                .isNotEmpty
                                                         ? element.imagePath[0]
                                                         : ''),
                                               ),
@@ -238,7 +240,19 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
         if (diff == 0) diff = a.key.compareTo(b.key);
         return diff;
       });
+
     _tags = [];
     _tagsSorted.forEach((key) => _tags.add(key.key));
+    _updateTags();
+    print('$_tags');
+  }
+
+  void _updateTags() async {
+    if (_tagKey.currentState == null) {
+      await new Future.delayed(const Duration(seconds : 1));
+      _updateTags();
+    } else {
+      if (_tags != null && _tags.isNotEmpty) _tagKey.currentState.updateTags(_tags);
+    }
   }
 }

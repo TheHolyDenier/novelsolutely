@@ -141,6 +141,6 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
   Future<bool> _saveAndExit(BuildContext context) async {
     _category.milestones = _milestones;
     Navigator.pop(context, _category);
-    return false; 
+    return false;
   }
 }
