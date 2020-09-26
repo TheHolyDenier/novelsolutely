@@ -11,6 +11,7 @@ import '../models/milestone.dart';
 import '../utils/dimens.dart';
 import '../utils/colors.dart';
 import '../utils/dialog_anim.dart';
+import 'dialogs/delete_dialog.dart';
 
 class MilestoneScreen extends StatefulWidget {
   static final route = '/milestone';
@@ -23,6 +24,8 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
   Category _category;
   List<Milestone> _milestones;
   List<bool> _selected;
+
+  double _heightListTile = 48.0;
 
   @override
   Widget build(BuildContext context) {
@@ -56,28 +59,20 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                         key: UniqueKey(),
                         children: [
                           _setDivider(index),
-                          ListTile(
-                            leading: Text(_milestones[index].date ?? ''),
-                            title: Text(_milestones[index].description),
-                            trailing: _selected[index]
-                                ? IconButton(
-                                    icon: Icon(Icons.delete_forever_outlined,
-                                        color: Palette.pink),
-                                    onPressed: () {
-                                      setState(() {
-                                        //TODO: dialog yes/no
-                                        _milestones.removeAt(index);
-                                      });
-                                    },
-                                  )
-                                : null,
-                            onTap: () {
-                              setState(() {
-                                _selected[index] = !_selected[index];
-                              });
-                            },
+                          Stack(
+                            children: [
+                              _setListTile(index),
+                              if (_selected[index])
+                                Positioned(
+                                  right: 0,
+                                  top: 0,
+                                  bottom: 0,
+                                  child: _setDeleteBtn(index),
+                                ),
+                            ],
                           ),
-                          if (index == _milestones.length - 1) _setDivider(index),
+                          if (index == _milestones.length - 1)
+                            _setDivider(index + 1),
                         ],
                       );
                     },
@@ -87,7 +82,8 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                       if (newIndex > oldIndex) {
                         newIndex--;
                       }
-                      final Milestone milestone = _milestones.removeAt(oldIndex);
+                      final Milestone milestone =
+                          _milestones.removeAt(oldIndex);
                       _milestones.insert(newIndex, milestone);
                       _alterIds();
                     });
@@ -98,7 +94,96 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
     );
   }
 
-  void _fillRange() => _selected = List.filled(_milestones.length, false);
+  Widget _setDeleteBtn(int index) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          height: double.maxFinite,
+          width: _heightListTile,
+          decoration: BoxDecoration(color: Theme.of(context).errorColor),
+          child: FittedBox(
+            fit: BoxFit.cover,
+            child: IconButton(
+              icon: Icon(
+                Icons.delete_forever_outlined,
+                color: Colors.white,
+              ),
+              onPressed: () =>
+                  DialogAnimation.openDialog(context, DeleteDialog())
+                      .then((value) {
+                if (value) {
+                  setState(() {
+                    _milestones.removeAt(index);
+                    _selected.removeAt(index);
+                  });
+                }
+              }),
+            ),
+          ),
+        ),
+        Container(
+          height: double.maxFinite,
+          width: _heightListTile,
+          decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+          child: FittedBox(
+            fit: BoxFit.cover,
+            child: IconButton(
+              icon: Icon(
+                Icons.edit_outlined,
+                color: Colors.white,
+              ),
+              onPressed:() =>
+                  DialogAnimation.openDialog(
+                      context, MilestoneInputDialog(_category.title, milestone: _milestones[index],))
+                      .then((value) {
+                    if (value is Milestone) {
+                      setState(() {
+                        print('tmp ${value.id} ${value.date??''} ${value.description}');
+                        _milestones[_milestones.indexWhere((element) => element.id == value.id)] = value;
+                        _selected[index] = false;
+                      });
+                    }
+                  }),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _setListTile(int index) {
+    return Container(
+      constraints: BoxConstraints(minHeight: _heightListTile),
+      padding: EdgeInsets.all(10.0),
+      child: InkWell(
+        child: Row(
+          children: [
+            Container(
+                margin: const EdgeInsets.only(right: 10.0),
+                width: 70.0,
+                child: Text(
+                  _milestones[index].date ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                )),
+            Expanded(
+                child: Text(
+              _milestones[index].description,
+              textAlign: TextAlign.justify,
+            )),
+          ],
+        ),
+        onTap: () {
+          setState(() {
+            _selected[index] = !_selected[index];
+          });
+        },
+      ),
+    );
+  }
+
+  void _fillRange() => _selected = List.filled(_milestones.length, false, growable: true);
 
   Widget _setDivider(int index) {
     return Row(

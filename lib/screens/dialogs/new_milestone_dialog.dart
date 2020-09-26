@@ -13,27 +13,39 @@ import '../../utils/dimens.dart';
 class MilestoneInputDialog extends StatefulWidget {
   final String title;
   final int index;
+  final Milestone milestone;
 
-  MilestoneInputDialog(this.title, {this.index});
+  MilestoneInputDialog(this.title, {this.index, this.milestone});
 
   @override
   _MilestoneInputDialogState createState() =>
-      _MilestoneInputDialogState(this.title, this.index);
+      _MilestoneInputDialogState(this.title, index: this.index, milestone: milestone);
 }
 
 class _MilestoneInputDialogState extends State<MilestoneInputDialog> {
   final String _title;
-  final int _index;
+  final int index;
+  Milestone milestone;
 
-  _MilestoneInputDialogState(this._title, this._index);
+  _MilestoneInputDialogState(this._title, {this.index, this.milestone});
 
   final _dateController = TextEditingController();
   final _milestoneController = TextEditingController();
 
   @override
+  void initState() {
+    if (milestone != null) {
+      _dateController.text = milestone.date;
+      _milestoneController.text = milestone.description;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('${Strings.add} ${_title.toLowerCase()}'),
+      title: Text(
+          '${milestone != null ? Strings.edit : Strings.add} ${_title.toLowerCase()}'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -87,7 +99,7 @@ class _MilestoneInputDialogState extends State<MilestoneInputDialog> {
       Navigator.pop(
           context,
           Milestone(
-              id: _index,
+              id: index?? milestone.id,
               description: _milestoneController.text.trim(),
               date: _dateController.text.trim() ?? null));
     }
