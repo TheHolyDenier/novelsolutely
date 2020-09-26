@@ -38,6 +38,9 @@ class CharacterName {
 
   static CharacterName fromInputs(
       {String name, String surname, String nickname}) {
+    nickname = nickname.replaceAll('«', '');
+    nickname = nickname.replaceAll('»', '');
+    print('tmp ---------> $surname, $name ${nickname != null && nickname.isNotEmpty ? "«$nickname»" : ""}');
     return CharacterName(
         '$surname, $name ${nickname != null && nickname.isNotEmpty ? "«$nickname»" : ""}');
   }

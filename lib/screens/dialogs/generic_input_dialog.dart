@@ -21,13 +21,14 @@ class GenericInputDialog extends StatefulWidget {
 
 class _GenericInputDialogState extends State<GenericInputDialog> {
   final bool _isCharacter;
-  Generic _generic; 
+  Generic _generic;
 
   _GenericInputDialogState(this._generic, this._isCharacter) {
     if (_isCharacter) {
       CharacterName name = CharacterName(_generic.name);
       _nameController.text = name.name;
-      _nicknameController.text = name.nickname;
+      _nicknameController.text =
+          name.nickname.replaceAll('«', '').replaceAll('»', '');
       _surnameController.text = name.surname;
     } else {
       _nameController.text = _generic.name;
@@ -44,7 +45,8 @@ class _GenericInputDialogState extends State<GenericInputDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('${Strings.edit} a ${CharacterName.readableName(_generic.name)}'),
+      title: Text(
+          '${Strings.edit} a ${CharacterName.readableName(_generic.name)}'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -71,11 +73,27 @@ class _GenericInputDialogState extends State<GenericInputDialog> {
             child: Text(Strings.cancel.toUpperCase())),
         FlatButton(
             onPressed: () {
-              //  TODO: SAVE
+              if (_formKey.currentState.validate()) {
+                _updateGeneric();
+                Navigator.pop(context, _generic);
+              }
             },
             child: Text(Strings.save.toUpperCase())),
       ],
     );
+  }
+
+  void _updateGeneric() {
+    if (_isCharacter) {
+      _generic.name = CharacterName.fromInputs(
+              name: _nameController.text ?? '',
+              nickname: _nicknameController.text ?? '',
+              surname: _surnameController.text ?? '')
+          .registerName();
+    } else {
+      _generic.name = _nameController.text;
+    }
+    _generic.summary = _summaryController.text ?? '';
   }
 
   Widget _form() {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 //LIBRARIES
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:novelsolutely/models/generic.dart';
 
 //SCREENS && WIDGETS
 import './widgets/header_widget.dart';
@@ -60,7 +61,14 @@ class _CharacterScreenState extends State<CharacterScreen> {
                   _character.toGeneric(),
                   isCharacter: true,
                 ),
-              ),
+              ).then((value) {
+                if (value is Generic) {
+                  setState(() {
+                    _character.name = value.name;
+                    _character.summary = value.summary;
+                  });
+                }
+              }),
             ),
             IconButton(
               icon: Icon(Icons.add_a_photo_outlined),

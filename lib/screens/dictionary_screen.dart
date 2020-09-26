@@ -22,7 +22,6 @@ import '../utils/routes.dart';
 //TODO: quick add elements
 //TODO: search by name/summary
 //TODO: still doesn't pop up characters?? check
-//TODO: upgrade delete milestone method
 //TODO: delete categories
 
 class DictionaryScreen extends StatefulWidget {
