@@ -55,11 +55,11 @@ class Character {
     this.appearance = Category(
         id: Uuid().v1(),
         title: Strings.appearance,
-        milestones: milestones ?? []);
+        milestones: appearance ?? []);
     this.personality = Category(
         id: Uuid().v1(),
         title: Strings.personality,
-        milestones: milestones ?? []);
+        milestones: personality ?? []);
   }
 
   @override

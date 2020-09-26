@@ -102,7 +102,6 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
 
   void _setInitialElements(BuildContext context) {
     _dictionary = Data.box.get(_idPath.idDictionary);
-    print('tmp _idPath.typeElementCategory ${_idPath.typeElementCategory}');
     if (_idPath.typeElementCategory != null) {
       switch (_idPath.typeElementCategory) {
         case Strings.characters:
@@ -128,7 +127,6 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
       }
       if (_category == null) Navigator.of(context).pop();
     }
-    print('tmp ${_category.title}');
     if (_category.milestones == null) _category.milestones = [];
     _dictionary.save();
     _fillRange();
@@ -183,7 +181,6 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                 if (value is Milestone) {
                   setState(() {
                     print(
-                        'tmp ${value.id} ${value.date ?? ''} ${value.description}');
                     _category.milestones[_category.milestones
                             .indexWhere((element) => element.id == value.id)] =
                         value;
