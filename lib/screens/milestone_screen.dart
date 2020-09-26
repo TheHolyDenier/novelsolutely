@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:novelsolutely/models/character.dart';
-import 'package:novelsolutely/models/dictionary.dart';
-import 'package:novelsolutely/models/id_path.dart';
-import 'package:novelsolutely/utils/data.dart';
-import 'package:novelsolutely/utils/strings.dart';
 
 //VIEWS
 import './dialogs/new_milestone_dialog.dart';
+import './dialogs/delete_dialog.dart';
 
 //Models
 import '../models/category.dart';
 import '../models/milestone.dart';
+import '../models/character.dart';
+import '../models/dictionary.dart';
+import '../models/id_path.dart';
 
 //UTILS
 import '../utils/dimens.dart';
 import '../utils/colors.dart';
 import '../utils/dialog_anim.dart';
-import 'dialogs/delete_dialog.dart';
+import '../utils/data.dart';
+import '../utils/strings.dart';
 
 class MilestoneScreen extends StatefulWidget {
   static final route = '/milestone';
@@ -26,8 +26,8 @@ class MilestoneScreen extends StatefulWidget {
 }
 
 class _MilestoneScreenState extends State<MilestoneScreen> {
+  Dictionary _dictionary;
   Category _category;
-  List<Milestone> _milestones;
   List<bool> _selected;
 
   IdPath _idPath;
@@ -54,11 +54,11 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
           padding: EdgeInsets.symmetric(
               vertical: Dimens.vertical_margin,
               horizontal: Dimens.horizontal_margin),
-          child: _milestones == null || _milestones.isEmpty
+          child: _category.milestones == null || _category.milestones.isEmpty
               ? _setDivider(0)
               : ReorderableListView(
                   children: List.generate(
-                    _milestones.length,
+                    _category.milestones.length,
                     (index) {
                       return Column(
                         mainAxisSize: MainAxisSize.min,
@@ -77,7 +77,7 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                                 ),
                             ],
                           ),
-                          if (index == _milestones.length - 1)
+                          if (index == _category.milestones.length - 1)
                             _setDivider(index + 1),
                         ],
                       );
@@ -89,8 +89,8 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                         newIndex--;
                       }
                       final Milestone milestone =
-                          _milestones.removeAt(oldIndex);
-                      _milestones.insert(newIndex, milestone);
+                          _category.milestones.removeAt(oldIndex);
+                      _category.milestones.insert(newIndex, milestone);
                       _alterIds();
                     });
                   },
@@ -101,19 +101,23 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
   }
 
   void _setInitialElements(BuildContext context) {
-    Dictionary dictionary = Data.box.get(_idPath.idDictionary);
+    _dictionary = Data.box.get(_idPath.idDictionary);
+    print('tmp _idPath.typeElementCategory ${_idPath.typeElementCategory}');
     if (_idPath.typeElementCategory != null) {
       switch (_idPath.typeElementCategory) {
         case Strings.characters:
-          Character character = dictionary.characters
-              .firstWhere((element) => element.id == _idPath.idElement);
-          if (character.appearance.id == _idPath.idCategory) {
-            _category = character.appearance;
-          } else if (character.personality.id == _idPath.idCategory) {
-            _category = character.personality;
+          int index = _dictionary.characters
+              .indexWhere((element) => element.id == _idPath.idElement);
+          if (_dictionary.characters[index].appearance.id ==
+              _idPath.idCategory) {
+            _category = _dictionary.characters[index].appearance;
+          } else if (_dictionary.characters[index].personality.id ==
+              _idPath.idCategory) {
+            _category = _dictionary.characters[index].personality;
           } else {
-            if (character.milestones != null) {
-              for (Category category in character.milestones) {
+            if (_dictionary.characters[index].milestones != null) {
+              for (Category category
+                  in _dictionary.characters[index].milestones) {
                 if (category.id == _idPath.idCategory) _category = category;
               }
             }
@@ -124,7 +128,9 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
       }
       if (_category == null) Navigator.of(context).pop();
     }
-    _milestones = _category.milestones ?? [];
+    print('tmp ${_category.title}');
+    if (_category.milestones == null) _category.milestones = [];
+    _dictionary.save();
     _fillRange();
   }
 
@@ -148,8 +154,9 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                       .then((value) {
                 if (value) {
                   setState(() {
-                    _milestones.removeAt(index);
+                    _category.milestones.removeAt(index);
                     _selected.removeAt(index);
+                    _save();
                   });
                 }
               }),
@@ -171,15 +178,17 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                   context,
                   MilestoneInputDialog(
                     _category.title,
-                    milestone: _milestones[index],
+                    milestone: _category.milestones[index],
                   )).then((value) {
                 if (value is Milestone) {
                   setState(() {
                     print(
                         'tmp ${value.id} ${value.date ?? ''} ${value.description}');
-                    _milestones[_milestones.indexWhere(
-                        (element) => element.id == value.id)] = value;
+                    _category.milestones[_category.milestones
+                            .indexWhere((element) => element.id == value.id)] =
+                        value;
                     _selected[index] = false;
+                    _save();
                   });
                 }
               }),
@@ -201,13 +210,13 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                 margin: const EdgeInsets.only(right: 10.0),
                 width: 70.0,
                 child: Text(
-                  _milestones[index].date ?? '',
+                  _category.milestones[index].date ?? '',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 )),
             Expanded(
                 child: Text(
-              _milestones[index].description,
+              _category.milestones[index].description,
               textAlign: TextAlign.justify,
             )),
           ],
@@ -221,8 +230,8 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
     );
   }
 
-  void _fillRange() =>
-      _selected = List.filled(_milestones.length, false, growable: true);
+  void _fillRange() => _selected =
+      List.filled(_category.milestones.length, false, growable: true);
 
   Widget _setDivider(int index) {
     return Row(
@@ -235,6 +244,7 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
               .then((value) {
             if (value is Milestone) {
               _add(value);
+              _save();
             }
           }),
           icon: Icon(Icons.add_circle_outline_outlined),
@@ -243,27 +253,32 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
     );
   }
 
+  void _save() {
+    _dictionary.save();
+  }
+
   void _add(Milestone milestone) {
-    if (_milestones.isEmpty) {
+    if (_category.milestones.isEmpty) {
       setState(() {
-        _milestones = [milestone];
+        _category.milestones = [milestone];
       });
     } else {
-      _milestones.insert(milestone.id, milestone);
+      _category.milestones.insert(milestone.id, milestone);
       _alterIds();
     }
     _fillRange();
   }
 
   void _alterIds() {
-    for (var i = 0; i < _milestones.length; i++) {
-      _milestones[i].id = i;
+    for (var i = 0; i < _category.milestones.length; i++) {
+      _category.milestones[i].id = i;
     }
     setState(() {});
+    _save();
   }
 
   Future<bool> _saveAndExit(BuildContext context) async {
-    _category.milestones = _milestones;
+    _category.milestones = _category.milestones;
     Navigator.pop(context, _category);
     return false;
   }

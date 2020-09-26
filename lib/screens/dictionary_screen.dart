@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:novelsolutely/models/id_path.dart';
 
 import './new_element_screen.dart';
 
@@ -10,6 +9,7 @@ import './widgets/drawer_widget.dart';
 //MODELS
 import '../models/dictionary.dart';
 import '../models/enum/novel_event_type.dart';
+import '../models/id_path.dart';
 
 //UTILS
 import '../utils/colors.dart';

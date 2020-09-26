@@ -123,6 +123,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
                               if (!Strings.containsCaseInsensitive(
                                   str, _character.tags))
                                 _character.tags.add(str);
+                              _dictionary.save();
                             });
                           },
                         ),
@@ -151,6 +152,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
               ),
               MilestoneWidget(
                 IdPath(_idPath.idDictionary,
+                    typeElementCategory: Strings.characters,
                     idElement: _character.id,
                     idCategory: _character.personality.id),
                 _character.personality,
@@ -160,6 +162,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
               MilestoneWidget(
                 IdPath(_idPath.idDictionary,
                     idElement: _character.id,
+                    typeElementCategory: Strings.characters,
                     idCategory: _character.appearance.id),
                 _character.appearance,
                 callback: (category) =>
@@ -169,7 +172,9 @@ class _CharacterScreenState extends State<CharacterScreen> {
                 for (final category in _character.milestones)
                   MilestoneWidget(
                     IdPath(_idPath.idDictionary,
-                        idElement: _character.id, idCategory: category.id),
+                        typeElementCategory: Strings.characters,
+                        idElement: _character.id,
+                        idCategory: category.id),
                     category,
                     callback: (category) =>
                         _saveCategory(category, id: category.id),
@@ -186,6 +191,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
                   setState(() {
                     _character.milestones
                         .add(Category(id: Uuid().v1(), title: value));
+                    _dictionary.save();
                   });
                 }
               });
@@ -212,6 +218,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
   void _removeItem(int index) {
     setState(() {
       _character.tags.removeAt(index);
+      _dictionary.save();
     });
   }
 
