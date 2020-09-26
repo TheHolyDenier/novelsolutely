@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 //VIEWS
@@ -42,27 +40,27 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
   final GenericContainerCallback callback;
   final GlobalKey<TagWidgetState> _tagKey = GlobalKey();
 
-  List<Generic> _elements;
-  List<Generic> _filtered;
+  List<Generic> _allElements;
+  List<Generic> _filteredElements;
   List<String> _tags = [];
-  List<String> _selected = [];
+  List<String> _selectedElements = [];
 
   GenericContainerWidgetState(this._idDictionary,
       {this.key, this.callback, this.typeElement});
 
   void _setCharacterList({bool force = false}) {
-    if ((_elements == null || _elements.isEmpty) || force) {
-      _elements = Data.listToGeneric(_idDictionary, typeElement);
-      _elements.sort((a, b) => a.name.compareTo(b.name));
-      _filtered = List.from(_elements);
-      _setUpdatedTags();
+    if ((_allElements == null || _allElements.isEmpty) || force) {
+      _allElements = Data.listToGeneric(_idDictionary, typeElement);
+      _allElements.sort((a, b) => a.name.compareTo(b.name));
+      _filteredElements = List.from(_allElements);
+      _checkTags();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     _setCharacterList();
-    return _elements != null
+    return _allElements != null
         ? Column(
             children: [
               if (_tags.isNotEmpty)
@@ -70,16 +68,16 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
                     callback: (values) => _updateSelected(values),
                     key: _tagKey),
               Expanded(
-                child: _filtered != null
+                child: _filteredElements != null
                     ? ListView.builder(
-                        itemCount: _filtered.length,
+                        itemCount: _filteredElements.length,
                         itemBuilder: (context, index) {
-                          Generic element = _filtered[index];
+                          Generic element = _filteredElements[index];
                           return Column(
                             children: [
                               if (index == 0 ||
                                   element.name[0] !=
-                                      _filtered[index - 1].name[0])
+                                      _filteredElements[index - 1].name[0])
                                 Column(
                                   children: [
                                     if (index != 0)
@@ -92,50 +90,7 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
                                             .headline3),
                                   ],
                                 ),
-                              Card(
-                                margin: EdgeInsets.symmetric(
-                                    vertical: Dimens.small_vertical_margin),
-                                child: Container(
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: ListTile(
-                                          leading: Hero(
-                                            tag: element.name,
-                                            child: Container(
-                                              width: 50,
-                                              height: 50,
-                                              child: ClipOval(
-                                                child: ImageWidget(
-                                                    url: element.imagePath !=
-                                                                null &&
-                                                            element.imagePath
-                                                                .isNotEmpty
-                                                        ? element.imagePath[0]
-                                                        : ''),
-                                              ),
-                                            ),
-                                          ),
-                                          title: Text(element.name),
-                                          subtitle: Text(
-                                            element.summary,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          trailing:
-                                              Icon(Icons.keyboard_arrow_right),
-                                          onTap: () => _onTapItem(element),
-                                          onLongPress: () =>
-                                              _selectDeselect(element),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                color: _selected.contains(element.id)
-                                    ? Palette.purple
-                                    : null,
-                              )
+                              _setElementCard(element)
                             ],
                           );
                         },
@@ -147,14 +102,54 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
         : Container();
   }
 
+  Widget _setElementCard(Generic element) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: Dimens.small_vertical_margin),
+      child: Container(
+        child: Row(
+          children: [
+            Expanded(
+              child: ListTile(
+                leading: Hero(
+                  tag: element.name,
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    child: ClipOval(
+                      child: ImageWidget(
+                          url: element.imagePath != null &&
+                                  element.imagePath.isNotEmpty
+                              ? element.imagePath[0]
+                              : ''),
+                    ),
+                  ),
+                ),
+                title: Text(element.name),
+                subtitle: Text(
+                  element.summary,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                trailing: Icon(Icons.keyboard_arrow_right),
+                onTap: () => _onTapItem(element),
+                onLongPress: () => _selectDeselect(element),
+              ),
+            ),
+          ],
+        ),
+      ),
+      color: _selectedElements.contains(element.id) ? Palette.purple : null,
+    );
+  }
+
   void _onTapItem(Generic element) {
-    if (_selected.isEmpty) {
+    if (_selectedElements.isEmpty) {
       Navigator.pushNamed(context, CharacterScreen.route,
               arguments:
                   PathId(dictionaryId: _idDictionary, elementId: element.id))
           .then((value) {
+        _setCharacterList(force: true);
         _tagKey.currentState.updateTags(_tags);
-        _setUpdatedTags();
         setState(() {});
       });
     } else
@@ -162,17 +157,17 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
   }
 
   void _selectDeselect(Generic element) {
-    if (_selected.contains(element.id)) {
+    if (_selectedElements.contains(element.id)) {
       setState(() {
-        _selected.remove(element.id);
+        _selectedElements.remove(element.id);
       });
     } else {
       setState(() {
-        _selected.add(element.id);
+        _selectedElements.add(element.id);
       });
     }
 
-    callback(_selected.isEmpty
+    callback(_selectedElements.isEmpty
         ? NovelEventType.NO_CHAR_SELECTED
         : NovelEventType.CHAR_SELECTED);
   }
@@ -193,17 +188,17 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
 
   void _deselectAllCharacters() {
     setState(() {
-      _selected = [];
+      _selectedElements = [];
     });
     callback(NovelEventType.NO_CHAR_SELECTED);
   }
 
   void _deleteSelected(value) {
     if (value) {
-      List selected = List.from(_selected);
+      List selected = List.from(_selectedElements);
       selected.forEach((id) {
         Data.deleteCharacter(_idDictionary, id);
-        _selected.remove(id);
+        _selectedElements.remove(id);
       });
       Data.box.get(_idDictionary).save();
       setState(() {
@@ -215,16 +210,18 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
 
   void _updateSelected(List<String> selected) {
     setState(() {
-      _filtered = List.from(_elements
-          .where((character) =>
-              selected.any((tag) => character.tags.contains(tag)))
-          .toList());
+      _filteredElements = [
+        ...List.from(_allElements
+            .where((character) =>
+                selected.any((tag) => character.tags.contains(tag)))
+            .toList())
+      ];
     });
   }
 
-  void _setUpdatedTags() {
+  void _checkTags() {
     Map<String, int> tagMap = Map();
-    _elements.forEach((character) {
+    _allElements.forEach((character) {
       character.tags.forEach((tag) {
         if (tagMap.containsKey(tag)) {
           tagMap[tag]++;
@@ -249,10 +246,11 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
 
   void _updateTags() async {
     if (_tagKey.currentState == null) {
-      await new Future.delayed(const Duration(seconds : 1));
+      await new Future.delayed(const Duration(seconds: 1));
       _updateTags();
     } else {
-      if (_tags != null && _tags.isNotEmpty) _tagKey.currentState.updateTags(_tags);
+      if (_tags != null && _tags.isNotEmpty)
+        _tagKey.currentState.updateTags(_tags);
     }
   }
 }

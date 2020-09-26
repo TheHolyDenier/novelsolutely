@@ -72,9 +72,7 @@ class TagWidgetState extends State<TagWidget> {
               onSelected: (bool value) {
                 setState(() {
                   if (!value) {
-                    _selected.removeWhere((String name) {
-                      return name == tag;
-                    });
+                    _selected.removeWhere((String name) => name == tag);
                   } else {
                     _selected.add(tag);
                   }
@@ -90,7 +88,7 @@ class TagWidgetState extends State<TagWidget> {
 
   void _select(bool tagsState) {
     if (tagsState) {
-      _selected = List.from(_tagsList);
+      _selected = [...List.from(_tagsList)];
     } else {
       _selected.length = 0;
     }
@@ -100,8 +98,8 @@ class TagWidgetState extends State<TagWidget> {
 
   void updateTags(List<String> newTags) {
     setState(() {
-      _tagsList = newTags;
-      _selected = newTags;
+      _tagsList = [...newTags];
+      _selected = [...newTags];
       callback(_selected);
     });
   }

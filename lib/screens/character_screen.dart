@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 //LIBRARIES
 import 'package:flutter_tags/flutter_tags.dart';
-import 'package:novelsolutely/models/generic.dart';
 
 //SCREENS && WIDGETS
 import './widgets/header_widget.dart';
@@ -16,6 +15,7 @@ import '../models/character_name.dart';
 import '../models/dictionary.dart';
 import '../models/path_id.dart';
 import '../models/category.dart';
+import '../models/generic.dart';
 
 //UTILS
 import '../utils/strings.dart';
@@ -51,7 +51,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
             onPressed: () => _saveCharacter(context),
             icon: Icon(Icons.keyboard_arrow_left),
           ),
-          title: Text(CharacterName.readableName(_character.name)),
+          title: Text(CharacterName.readableName(_character.name), maxLines: 1, overflow: TextOverflow.ellipsis,),
           actions: [
             IconButton(
               icon: Icon(Icons.edit_outlined),
