@@ -24,6 +24,7 @@ import '../utils/routes.dart';
 //TODO: search by name/summary
 //TODO: still doesn't pop up characters?? check
 //TODO: delete categories
+//TODO: new characters doesn't show up!!
 
 class DictionaryScreen extends StatefulWidget {
   static const route = "/characters";

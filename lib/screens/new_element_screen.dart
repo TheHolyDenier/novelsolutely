@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
-import 'package:novelsolutely/models/id_path.dart';
+import 'package:novelsolutely/models/other.dart';
 
 //LIBRARIES
 import 'package:uuid/uuid.dart';
 
-import '../models/character.dart';
-
 //MODELS
 import '../models/character_name.dart';
 import '../models/dictionary.dart';
+import '../models/id_path.dart';
+import '../models/generic.dart';
+import '../models/item.dart' as IP;
+import '../models/character.dart';
 
 //WIDGETS
 import '../screens/widgets/image_widget.dart';
-import '../utils/colors.dart';
 
 //UTILS
 import '../utils/data.dart';
 import '../utils/dimens.dart';
 import '../utils/routes.dart';
 import '../utils/strings.dart';
+import '../utils/colors.dart';
 
 class NewElementScreen extends StatefulWidget {
   static const route = '/new';
@@ -280,9 +282,9 @@ class _NewElementScreenState extends State<NewElementScreen> {
   void _saveElement() {
     if (_selected[0]) _saveCharacter();
 
-    if (_selected[1]) {}
-    if (_selected[2]) {}
-    if (_selected[3]) {}
+    if (_selected[1]) _savePlace();
+    if (_selected[2]) _saveItem();
+    if (_selected[3]) _saveOther();
   }
 
   void _saveCharacter() {
@@ -291,18 +293,51 @@ class _NewElementScreenState extends State<NewElementScreen> {
         surname: _surnameController.text.trim(),
         nickname: _nicknameController.text.trim());
 
-    Character character = Character(
-      id: Uuid().v1(),
-      name: name.registerName(),
-      tags: _tags != null && _tags.length > 0 ? _tags : [Strings.no_filter],
-      summary: _summaryController.text.trim(),
-      imagePath: [_imageController.text.trim()],
-    );
+    Character character = _genGeneric().toCharacter();
+    character.name = name.registerName();
+
     if (_dictionary.characters == null) _dictionary.characters = [];
     setState(() {
       _dictionary.characters.add(character);
     });
     _dictionary.save();
     Navigator.pop(context, true);
+  }
+
+  void _savePlace() {
+    if (_dictionary.places == null) _dictionary.places = [];
+    setState(() {
+      _dictionary.places.add(_genGeneric().toPlaceOrItem());
+    });
+    _dictionary.save();
+    Navigator.pop(context, true);
+  }
+
+  void _saveItem() {
+    if (_dictionary.items == null) _dictionary.items = [];
+    setState(() {
+      _dictionary.items.add(_genGeneric().toPlaceOrItem());
+    });
+    _dictionary.save();
+    Navigator.pop(context, true);
+  }
+
+  void _saveOther() {
+    if (_dictionary.others == null) _dictionary.others = [];
+    setState(() {
+      _dictionary.others.add(_genGeneric().toOther());
+    });
+    _dictionary.save();
+    Navigator.pop(context, true);
+  }
+
+  Generic _genGeneric() {
+    return Generic(
+      id: Uuid().v1(),
+      name: _nameController.text.trim(),
+      tags: _tags != null && _tags.length > 0 ? _tags : [Strings.no_filter],
+      summary: _summaryController.text.trim(),
+      imagePath: [_imageController.text.trim()],
+    );
   }
 }

@@ -180,7 +180,6 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                   )).then((value) {
                 if (value is Milestone) {
                   setState(() {
-                    print(
                     _category.milestones[_category.milestones
                             .indexWhere((element) => element.id == value.id)] =
                         value;

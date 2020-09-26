@@ -64,10 +64,18 @@ class Data {
           generics = _charactersToGeneric(id);
         break;
       case Strings.places:
+        if (getDictionary(id).places != null &&
+            getDictionary(id).places.length > 0)
+          generics = _placesToGeneric(id);
         break;
       case Strings.items:
+        if (getDictionary(id).items != null &&
+            getDictionary(id).items.length > 0) generics = _itemsToGeneric(id);
         break;
       default:
+        if (getDictionary(id).others != null &&
+            getDictionary(id).others.length > 0)
+          generics = _othersToGeneric(id);
         break;
     }
 
@@ -78,6 +86,30 @@ class Data {
     List<Generic> generics = [];
     (_box.get(id) as Dictionary).characters.forEach((character) {
       generics.add(character.toGeneric());
+    });
+    return generics;
+  }
+
+  static List<Generic> _placesToGeneric(String id) {
+    List<Generic> generics = [];
+    (_box.get(id) as Dictionary).places.forEach((place) {
+      generics.add(place.toGeneric());
+    });
+    return generics;
+  }
+
+  static List<Generic> _itemsToGeneric(String id) {
+    List<Generic> generics = [];
+    (_box.get(id) as Dictionary).items.forEach((item) {
+      generics.add(item.toGeneric());
+    });
+    return generics;
+  }
+
+  static List<Generic> _othersToGeneric(String id) {
+    List<Generic> generics = [];
+    (_box.get(id) as Dictionary).others.forEach((other) {
+      generics.add(other.toGeneric());
     });
     return generics;
   }

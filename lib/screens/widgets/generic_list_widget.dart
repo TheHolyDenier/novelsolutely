@@ -48,7 +48,7 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
   GenericContainerWidgetState(this._pathId,
       {this.key, this.callback, this.typeElement});
 
-  void _setCharacterList({bool force = false}) {
+  void _setElementList({bool force = false}) {
     if ((_allElements == null || _allElements.isEmpty) || force) {
       _allElements = Data.listToGeneric(_pathId.idDictionary, typeElement);
       _allElements.sort((a, b) => a.name.compareTo(b.name));
@@ -59,7 +59,7 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _setCharacterList();
+    _setElementList();
     return _allElements != null
         ? Column(
             children: [
@@ -148,7 +148,7 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
               arguments:
                   IdPath(_pathId.idDictionary, typeElementCategory: typeElement, idElement: element.id))
           .then((value) {
-        _setCharacterList(force: true);
+        _setElementList(force: true);
         _tagKey.currentState.updateTags(_tags);
         setState(() {});
       });
@@ -202,7 +202,7 @@ class GenericContainerWidgetState extends State<GenericContainerWidget> {
       });
       Data.box.get(_pathId).save();
       setState(() {
-        _setCharacterList(force: true);
+        _setElementList(force: true);
       });
       callback(NovelEventType.NO_CHAR_SELECTED);
     }
